@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import "package:flutter_map/flutter_map.dart";
 import 'package:latlong2/latlong.dart';
@@ -5,19 +6,26 @@ import "package:http/http.dart" as http;
 import "dart:convert" as convert;
 import 'package:geolocator/geolocator.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Flutter Demo",
+      theme: ThemeData.dark(),
+      darkTheme: ThemeData.dark(),
       home: HomeScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -27,9 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    print("initstate");
     getPosition();
   }
 
@@ -44,8 +50,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     //final tomtomHQ = latLng.LatLng(52.376372, 4.908066);
     return MaterialApp(
-      title: "TomTom Map",
+      title: "Info-Pulli",
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Center(
             child: Stack(
           children: <Widget>[
@@ -64,10 +71,72 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 80.0,
                       height: 80.0,
                       point: LatLng(51.388514, 7.000371),
-                      builder: (BuildContext context) => const Icon(
-                        Icons.location_on,
-                        size: 60.0,
-                        color: Colors.green,
+                      builder: (BuildContext context) => IconButton(
+                        icon: Stack(
+                          children: const [
+                            Icon(
+                              Icons.location_on,
+                              size: 60.0,
+                              color: Colors.black,
+                            ),
+                            Positioned(
+                              top: 0,
+                              left: 12,
+                              child: Center(
+                                child: Image(
+                                  image: AssetImage(
+                                    "assets/images/baginski.png",
+                                  ),
+                                  height: 36,
+                                  width: 36,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: const [
+                                  Text(
+                                    "Lukas Baginski",
+                                    style: TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Image(
+                                    image: AssetImage(
+                                      "assets/images/baginski.png",
+                                    ),
+                                    width: 100,
+                                    height: 100,
+                                  ),
+                                ],
+                              ),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text(
+                                      "Hier wurde der Pulli von Lukas Baginski gescannt."),
+                                  Text("27. 01. 2004"),
+                                  Text("Grafenstraße 9")
+                                ],
+                              ),
+                              actions: [
+                                TextButton(
+                                    child: const Text("Schließen"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    })
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],
