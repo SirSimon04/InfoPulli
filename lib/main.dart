@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import "package:flutter_map/flutter_map.dart";
@@ -42,10 +44,31 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getPosition() async {
-    print("here");
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best);
-    print(position);
+    try {
+      print("getting position");
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.best);
+      print("sending");
+      final response = await http.post(
+        Uri.parse("http://home.noskiller.de/set"),
+        body: jsonEncode(
+          <String, double>{
+            "latitude": position.latitude,
+            "longitude": position.longitude,
+            "accuracy": 5,
+            "person_id": 3
+          },
+        ),
+        //     headers: <String, String>{
+        //   "Access-Control-Allow-Origin": "*",
+        // },
+      );
+      //print(response);
+      print(response.statusCode);
+      print(jsonDecode(response.body));
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
