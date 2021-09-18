@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
@@ -55,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
           <String, double>{
             "latitude": position.latitude,
             "longitude": position.longitude,
-            "accuracy": 5,
+            "accuracy": position.accuracy,
             "person_id": 3
           },
         ),
