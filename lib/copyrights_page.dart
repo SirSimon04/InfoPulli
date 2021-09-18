@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CopyrightsPage extends StatelessWidget {
   final String copyrightsText;
 
-  CopyrightsPage({required this.copyrightsText}) : super(key: key);
+  CopyrightsPage({required this.copyrightsText});
 
   @override
   Widget build(BuildContext context) {
