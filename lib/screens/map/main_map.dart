@@ -6,6 +6,7 @@ import "package:flutter/material.dart";
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:info_pulli/copyrights_page.dart';
+import 'package:info_pulli/services/name_services.dart';
 import 'package:info_pulli/widgets/marker.dart';
 import 'package:latlong2/latlong.dart';
 import "package:info_pulli/services/location.dart";
@@ -13,7 +14,9 @@ import "package:info_pulli/services/networking.dart";
 import 'package:location/location.dart';
 
 class MainMap extends StatefulWidget {
-  const MainMap({Key? key}) : super(key: key);
+  final String scan;
+
+  const MainMap(this.scan);
 
   @override
   _MainMapState createState() => _MainMapState();
@@ -32,11 +35,6 @@ class _MainMapState extends State<MainMap> {
     print("inifStae main map");
     // getPosAndSend();
 
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
-      setState(() {
-        showPosDialog(context);
-      });
-    });
     getLocationsAndBuildMarkers();
   }
 
@@ -54,7 +52,7 @@ class _MainMapState extends State<MainMap> {
 
   @override
   Widget build(BuildContext context) {
-    // Future.delayed(Duration.zero, () => showPosDialog(context));
+    Future.delayed(Duration.zero, () => showPosDialog(context));
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Center(
@@ -94,10 +92,10 @@ class _MainMapState extends State<MainMap> {
       builder: (_) => AlertDialog(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
+          children: [
             Text(
-              "Du hast den Pulli von Lukas Bagniski gescannt",
-              style: TextStyle(
+              "Du hast den Pulli von ${NameService.getFullName(widget.scan)} gescannt",
+              style: const TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
               ),
@@ -122,10 +120,10 @@ class _MainMapState extends State<MainMap> {
                   });
                 } else {
                   setState(() {
-                    grantText = "Schön";
+                    grantText = "Dein Scan wurde verschickt.";
                   });
                   LocationData position = await location.getLocation();
-                  Network().addScan(position);
+                  Network().addScan(position, widget.scan);
                   setState(() {
                     grantText = "Dein Scan wurde verschickt";
                   });

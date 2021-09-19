@@ -1,3 +1,4 @@
+import 'package:info_pulli/services/name_services.dart';
 import 'package:location/location.dart';
 import 'package:flutter/services.dart';
 
@@ -7,15 +8,15 @@ import 'dart:convert';
 class Network {
   Network();
 
-  Future addScan(LocationData position) async {
+  Future addScan(LocationData position, String short) async {
     final response = await http.post(
-      Uri.parse("http://home.noskiller.de/add"),
+      Uri.parse("https://home.noskiller.de/add"),
       body: jsonEncode(
-        <String, double>{
+        <String, dynamic>{
           "latitude": position.latitude ?? 0,
           "longitude": position.longitude ?? 0,
           "accuracy": 1,
-          "person_id": 3
+          "person_id": NameService.getId(short),
         },
       ),
       //     headers: <String, String>{

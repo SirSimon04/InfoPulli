@@ -9,10 +9,16 @@ import 'package:latlong2/latlong.dart';
 import "package:http/http.dart" as http;
 import "dart:convert" as convert;
 
-void main() => runApp(const MyApp());
+void main() {
+  String scan = Uri.base.queryParameters["scan"] ?? "nicht gefunden";
+  print(scan);
+  runApp(MyApp(scan));
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final String scan;
+
+  const MyApp(this.scan);
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +26,16 @@ class MyApp extends StatelessWidget {
       title: "Flutter Demo",
       theme: ThemeData.dark(),
       darkTheme: ThemeData.dark(),
-      home: HomeScreen(),
+      home: HomeScreen(scan),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final String scan;
+
+  const HomeScreen(this.scan);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -39,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //final tomtomHQ = latLng.LatLng(52.376372, 4.908066);
     return MaterialApp(
       title: "Info-Pulli",
-      home: MainMap(),
+      home: MainMap(widget.scan),
     );
   }
 }
