@@ -25,4 +25,20 @@ class Network {
     print(response.statusCode);
     return response;
   }
+
+  Future getAllLocations() async {
+    print("getting locations");
+    try {
+      final response = await http.post(
+          Uri.parse("https://home.noskiller.de/get_locations"),
+          body: jsonEncode({}));
+      List<dynamic> locations = jsonDecode(response.body)["content"];
+      print(response.statusCode);
+      print(locations);
+      print(locations.first);
+      return locations;
+    } catch (e) {
+      print(e);
+    }
+  }
 }
