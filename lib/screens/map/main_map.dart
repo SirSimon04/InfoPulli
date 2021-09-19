@@ -18,27 +18,88 @@ class MainMap extends StatefulWidget {
 class _MainMapState extends State<MainMap> {
   final String apiKey = "uHuXYU2hIlocJtD1UgIwV0O8omx8sZHv";
 
+  String grantText = "";
+
   @override
   void initState() {
     super.initState();
     print("inifStae main map");
-    getPosAndSend();
+    // getPosAndSend();
   }
 
-  Future<void> getPosAndSend() async {
-    try {
-      LocationData pos = await LocationHelper().getPosition();
-      print(pos);
-      print(pos.accuracy);
-      Network().addScan(pos);
-      print("addedScan");
-    } catch (e) {
-      print(e);
-    }
+  void showPosDialog(context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: const [
+            Text(
+              "Du hast den Pulli von Lukas Bagniski gescannt",
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+                "Um deinen Scan zu verifizieren, ist deine Standorterlaubnis nötig"),
+            TextButton(
+              child: const Text("Standort erlauben"),
+              onPressed: () async {
+                Location location = Location();
+                PermissionStatus _permissionGranted;
+                _permissionGranted = await location.requestPermission();
+                if (_permissionGranted != PermissionStatus.granted) {
+                  setState(() {
+                    grantText = "Schade";
+                  });
+                } else {
+                  setState(() {
+                    grantText = "Schön";
+                  });
+                  LocationData position = await location.getLocation();
+                  Network().addScan(position);
+                  setState(() {
+                    grantText = "Dein Scan wurde verschickt";
+                  });
+                }
+              },
+            ),
+            Text(grantText),
+          ],
+        ),
+        actions: [
+          TextButton(
+              child: const Text("Schließen"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              })
+        ],
+      ),
+    );
   }
+
+  // Future<void> getPosAndSend() async {
+  //   try {
+  //     LocationData pos = await LocationHelper().getPosition();
+  //     print(pos);
+  //     print(pos.accuracy);
+  //     Network().addScan(pos);
+  //     print("addedScan");
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(Duration.zero, () => showPosDialog(context));
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Center(
