@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:async';
+import 'dart:html';
 
 import "package:flutter/material.dart";
 import 'package:flutter/widgets.dart';
@@ -12,6 +13,7 @@ import 'package:latlong2/latlong.dart';
 import "package:info_pulli/services/location.dart";
 import "package:info_pulli/services/networking.dart";
 import 'package:location/location.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class MainMap extends StatefulWidget {
   final String scan;
@@ -32,9 +34,8 @@ class _MainMapState extends State<MainMap> {
   @override
   void initState() {
     super.initState();
-    print("inifStae main map");
-    // getPosAndSend();
-
+    print("initState MainMap");
+    Future.delayed(Duration.zero, () => showPosDialog(context));
     getLocationsAndBuildMarkers();
   }
 
@@ -52,7 +53,7 @@ class _MainMapState extends State<MainMap> {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () => showPosDialog(context));
+    // Future.delayed(Duration.zero, () => showPosDialog(context));
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Center(
@@ -134,11 +135,11 @@ class _MainMapState extends State<MainMap> {
           ],
         ),
         actions: [
-          // TextButton(
-          //     child: const Text("Schließen"),
-          //     onPressed: () {
-          //       Navigator.of(context).pop();
-          //     })
+          TextButton(
+              child: const Text("Schließen"),
+              onPressed: () {
+                Navigator.of(context).popUntil((route) => false);
+              })
         ],
       ),
     );
