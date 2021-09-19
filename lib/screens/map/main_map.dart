@@ -2,11 +2,11 @@
 
 import "package:flutter/material.dart";
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:info_pulli/copyrights_page.dart';
 import 'package:latlong2/latlong.dart';
 import "package:info_pulli/services/location.dart";
 import "package:info_pulli/services/networking.dart";
+import 'package:location/location.dart';
 
 class MainMap extends StatefulWidget {
   const MainMap({Key? key}) : super(key: key);
@@ -27,8 +27,9 @@ class _MainMapState extends State<MainMap> {
 
   Future<void> getPosAndSend() async {
     try {
-      Position pos = await Location().getPosition();
+      LocationData pos = await LocationHelper().getPosition();
       print(pos);
+      print(pos.accuracy);
       Network().addScan(pos);
       print("addedScan");
     } catch (e) {

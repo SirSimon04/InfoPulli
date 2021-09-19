@@ -8,11 +8,6 @@ import 'package:info_pulli/screens/map/main_map.dart';
 import 'package:latlong2/latlong.dart';
 import "package:http/http.dart" as http;
 import "dart:convert" as convert;
-import 'package:geolocator/geolocator.dart';
-
-import 'copyrights_page.dart';
-
-import 'package:uuid/uuid.dart';
 
 void main() => runApp(const MyApp());
 
