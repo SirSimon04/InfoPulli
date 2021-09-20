@@ -16,9 +16,7 @@ import 'package:location/location.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class MainMap extends StatefulWidget {
-  final String scan;
-
-  const MainMap(this.scan);
+  const MainMap();
 
   @override
   _MainMapState createState() => _MainMapState();
@@ -35,7 +33,6 @@ class _MainMapState extends State<MainMap> {
   void initState() {
     super.initState();
     print("initState MainMap");
-    Future.delayed(Duration.zero, () => showPosDialog(context));
     getLocationsAndBuildMarkers();
   }
 
@@ -87,61 +84,61 @@ class _MainMapState extends State<MainMap> {
     );
   }
 
-  void showPosDialog(context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Du hast den Pulli von ${NameService.getFullName(widget.scan)} gescannt",
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-                "Um deinen Scan zu verifizieren, ist deine Standorterlaubnis nötig"),
-            TextButton(
-              child: const Text("Standort erlauben"),
-              onPressed: () async {
-                Location location = Location();
-                PermissionStatus _permissionGranted;
-                _permissionGranted = await location.requestPermission();
-                if (_permissionGranted != PermissionStatus.granted) {
-                  setState(() {
-                    grantText = "Schade";
-                  });
-                } else {
-                  setState(() {
-                    grantText = "Dein Scan wurde verschickt.";
-                  });
-                  LocationData position = await location.getLocation();
-                  Network().addScan(position, widget.scan);
-                  setState(() {
-                    grantText = "Dein Scan wurde verschickt";
-                  });
-                }
-              },
-            ),
-            Text(grantText),
-          ],
-        ),
-        actions: [
-          TextButton(
-              child: const Text("Schließen"),
-              onPressed: () {
-                Navigator.of(context).popUntil((route) => false);
-              })
-        ],
-      ),
-    );
-  }
+  // void showPosDialog(context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (_) => AlertDialog(
+  //       title: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         children: [
+  //           Text(
+  //             "Du hast den Pulli von ${NameService.getFullName(widget.scan)} gescannt",
+  //             style: const TextStyle(
+  //               fontSize: 32,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //       content: Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           const Text(
+  //               "Um deinen Scan zu verifizieren, ist deine Standorterlaubnis nötig"),
+  //           TextButton(
+  //             child: const Text("Standort erlauben"),
+  //             onPressed: () async {
+  //               Location location = Location();
+  //               PermissionStatus _permissionGranted;
+  //               _permissionGranted = await location.requestPermission();
+  //               if (_permissionGranted != PermissionStatus.granted) {
+  //                 setState(() {
+  //                   grantText = "Schade";
+  //                 });
+  //               } else {
+  //                 setState(() {
+  //                   grantText = "Dein Scan wurde verschickt.";
+  //                 });
+  //                 LocationData position = await location.getLocation();
+  //                 Network().addScan(position, widget.scan);
+  //                 setState(() {
+  //                   grantText = "Dein Scan wurde verschickt";
+  //                 });
+  //               }
+  //             },
+  //           ),
+  //           Text(grantText),
+  //         ],
+  //       ),
+  //       actions: [
+  //         TextButton(
+  //             child: const Text("Schließen"),
+  //             onPressed: () {
+  //               Navigator.of(context).popUntil((route) => false);
+  //             })
+  //       ],
+  //     ),
+  //   );
+  // }
 }

@@ -42,4 +42,26 @@ class NameService {
       return -1;
     }
   }
+
+  static String getImagePath(String short) {
+    if (short == "baginski") {
+      return "assets/images/baginski.png";
+    } else if (short == "engel") {
+      return "assets/images/engel.png";
+    } else if (short == "boettger") {
+      return "assets/images/boettger.png";
+    } else if (short == "krinke") {
+      return "assets/images/krinke.png";
+    } else if (short == "thomas") {
+      return "assets/images/thomas.png";
+    } else if (short == "soentgerath") {
+      return "assets/images/baginski.png";
+    } else if (short == "wendland") {
+      return "assets/images/baginski.png";
+    } else if (short == "albrecht") {
+      return "assets/images/baginski.png";
+    } else {
+      return "Fehler";
+    }
+  }
 }

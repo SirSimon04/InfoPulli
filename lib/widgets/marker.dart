@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:info_pulli/services/name_services.dart';
 import 'package:latlong2/latlong.dart';
 
 getCustomMarker(List<dynamic> pos) {
@@ -9,8 +10,8 @@ getCustomMarker(List<dynamic> pos) {
     point: LatLng(pos[1], pos[2]),
     builder: (BuildContext context) => IconButton(
       icon: Stack(
-        children: const [
-          Icon(
+        children: [
+          const Icon(
             Icons.location_on,
             size: 60.0,
             color: Colors.black,
@@ -21,7 +22,7 @@ getCustomMarker(List<dynamic> pos) {
             child: Center(
               child: Image(
                 image: AssetImage(
-                  "assets/images/baginski.png",
+                  NameService.getImagePath(pos[5]),
                 ),
                 height: 36,
                 width: 36,
@@ -44,9 +45,9 @@ getCustomMarker(List<dynamic> pos) {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Image(
+                Image(
                   image: AssetImage(
-                    "assets/images/baginski.png",
+                    NameService.getImagePath(pos[5]),
                   ),
                   width: 100,
                   height: 100,
@@ -58,7 +59,8 @@ getCustomMarker(List<dynamic> pos) {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text("Hier wurde der Pulli von ${pos[6]} ${pos[7]} gescannt."),
-                Text(DateTime.fromMillisecondsSinceEpoch(pos[0]).toString()),
+                Text(DateTime.fromMillisecondsSinceEpoch(pos[0] * 1000)
+                    .toString()),
                 const Text("Grafenstraße 9")
               ],
             ),

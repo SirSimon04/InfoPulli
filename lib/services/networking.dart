@@ -10,7 +10,7 @@ class Network {
 
   Future addScan(LocationData position, String short) async {
     final response = await http.post(
-      Uri.parse("https://home.noskiller.de/add"),
+      Uri.parse("https://pulli.noskiller.de/add"),
       body: jsonEncode(
         <String, dynamic>{
           "latitude": position.latitude ?? 0,
@@ -31,7 +31,7 @@ class Network {
     print("getting locations");
     try {
       final response = await http.post(
-          Uri.parse("https://home.noskiller.de/get_locations"),
+          Uri.parse("https://pulli.noskiller.de/get_locations"),
           body: jsonEncode({}));
       List<dynamic> locations = jsonDecode(response.body)["content"];
       print(response.statusCode);
