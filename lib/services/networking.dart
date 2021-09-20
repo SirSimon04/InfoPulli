@@ -13,8 +13,27 @@ class Network {
       Uri.parse("https://pulli.noskiller.de/add"),
       body: jsonEncode(
         <String, dynamic>{
-          "latitude": position.latitude ?? 0,
-          "longitude": position.longitude ?? 0,
+          "latitude": position.latitude ?? null,
+          "longitude": position.longitude ?? null,
+          "accuracy": 1,
+          "person_id": NameService.getId(short),
+        },
+      ),
+      //     headers: <String, String>{
+      //   "Access-Control-Allow-Origin": "*",
+      // },
+    );
+    print(response.statusCode);
+    return response;
+  }
+
+  Future addEmptyScan(String short) async {
+    final response = await http.post(
+      Uri.parse("https://pulli.noskiller.de/add"),
+      body: jsonEncode(
+        <String, dynamic>{
+          "latitude": null,
+          "longitude": null,
           "accuracy": 1,
           "person_id": NameService.getId(short),
         },

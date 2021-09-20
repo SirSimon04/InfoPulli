@@ -14,6 +14,7 @@ class ScanInfoScreen extends StatefulWidget {
 
 class _ScanInfoScreenState extends State<ScanInfoScreen> {
   String grantText = "Warte auf Erlaubnis...";
+  bool isButtonDisabled = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,25 +64,34 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
                   .bodyText1
                   ?.copyWith(color: Colors.white),
             ),
-            onPressed: () async {
-              Location location = Location();
-              PermissionStatus _permissionGranted;
-              _permissionGranted = await location.requestPermission();
-              if (_permissionGranted != PermissionStatus.granted) {
-                setState(() {
-                  grantText = "Es ist ein Fehler aufgetreten";
-                });
-              } else {
-                setState(() {
-                  grantText = "Dein Scan wird verschickt.";
-                });
-                LocationData position = await location.getLocation();
-                Network().addScan(position, widget.scan);
-                setState(() {
-                  grantText = "Dein Scan wurde verschickt!";
-                });
-              }
-            },
+            onPressed: isButtonDisabled
+                ? null
+                : () async {
+                    setState(() {
+                      isButtonDisabled = true;
+                    });
+                    Location location = Location();
+                    PermissionStatus _permissionGranted;
+                    _permissionGranted = await location.requestPermission();
+                    if (_permissionGranted != PermissionStatus.granted) {
+                      await Network().addEmptyScan(widget.scan);
+
+                      setState(() {
+                        grantText =
+                            "Bei der Standortabfrage ist ein Fehler aufgetreten, dein Scan wurde ihen Standort gesendet";
+                      });
+                      return;
+                    } else {
+                      setState(() {
+                        grantText = "Dein Scan wird verschickt.";
+                      });
+                      LocationData position = await location.getLocation();
+                      await Network().addScan(position, widget.scan);
+                      setState(() {
+                        grantText = "Dein Scan wurde verschickt!";
+                      });
+                    }
+                  },
           ),
           const SizedBox(
             height: 50,
