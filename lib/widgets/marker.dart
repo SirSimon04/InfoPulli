@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:info_pulli/services/name_services.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
+
+final format = DateFormat("dd.MM.yyyy hh:mm");
 
 getCustomMarker(List<dynamic> pos) {
   return Marker(
@@ -35,6 +38,7 @@ getCustomMarker(List<dynamic> pos) {
         showDialog(
           context: context,
           builder: (_) => AlertDialog(
+            backgroundColor: Colors.black,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -43,6 +47,7 @@ getCustomMarker(List<dynamic> pos) {
                   style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
                 Image(
@@ -58,19 +63,31 @@ getCustomMarker(List<dynamic> pos) {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Hier wurde der Pulli von ${pos[6]} ${pos[7]} gescannt."),
-                Text(DateTime.fromMillisecondsSinceEpoch(pos[0] * 1000)
-                    .toString()),
-                const Text("Grafenstraße 9")
+                //Text("Hier wurde der Pulli von ${pos[6]} ${pos[7]} gescannt."),
+                Text(
+                  format
+                      .format(
+                          DateTime.fromMillisecondsSinceEpoch(pos[0] * 1000))
+                      .toString(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  pos[8],
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                )
               ],
             ),
-            actions: [
-              TextButton(
-                  child: const Text("Schließen"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  })
-            ],
+            // actions: [
+            //   TextButton(
+            //       child: const Text("Schließen"),
+            //       onPressed: () {
+            //         Navigator.of(context).pop();
+            //       })
+            // ],
           ),
         );
       },
