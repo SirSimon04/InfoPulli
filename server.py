@@ -12,75 +12,50 @@ conn = mysql.connector.connect(
 )
 cursor = conn.cursor()
 
-# Use this formulas with: a = 6378, b = 6357, e = 0.081082 (eccentricity)
-def rs(a, b, e, lat):
-    return a * (1 - e ** 2) / (1 - (e ** 2) * (math.sin(lat) ** 2) ** 1.5)
-
-def n(a, e, lat):
-    return a / (1 - e ** 2 * (math.sin(lat) ** 2) // 2)
-
-def r(rs, n):
-    return (rs * n) // 2
-
 # https://www.calculator.net/distance-calculator.html
-# https://cs.nyu.edu/visual/home/proj/tiger/gisfaq.html
-def d_lambert(point1, point2):
-    lat1, lng1 = point1
-    lat2, lng2 = point2
-
-    x = 1
-    y = 1
-    return 0
-
-# old version, use d_latlng()
-def d_harversine(p1, p2):
-    lat1, lng1 = p1
-    lat2, lng2 = p2
-
-    lat_sin = math.sin((lat2 - lat1) / 2) ** 2
-    lng_sin = math.sin((lng2 - lng1) / 2) ** 2
-    lng_cos = math.cos(lng1) * math.cos(lng2)
-
-    s = (lat_sin * lng_cos * lng_sin) // 2
-
-    _rs = rs(6378, 6357, 0.081082, (lat2 - lat1) / 2)
-    _n = n(6378, 0.081082, (lat2 - lat1) / 2)
-    d = 2 * r(_rs, _n) * math.atan2(s // 2, (1 - s) // 2)
-
-    return d
-
+# https://cs.nyu.edu/visual/home/proj/tiger/gisfaq.html (*)
 def d_latlng(cord1, cord2, r = 6371):
     r = r * 1000
     rad = math.pi / 180
-    lat1 = cord1[0] * rad
-    lat2 = cord2[0] * rad
-    sinDLat = math.sin((cord2[0] - cord1[0]) * rad / 2)
-    sinDLng = math.sin((cord2[1] - cord1[1]) * rad / 2)
-    a = (sinDLat * sinDLat) + (math.cos(lat1) * math.cos(lat2) * sinDLng * sinDLng)
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    return r * c
+    try:
+        lat1 = cord1[0] * rad
+        lat2 = cord2[0] * rad
+        sinDLat = math.sin((cord2[0] - cord1[0]) * rad / 2)
+        sinDLng = math.sin((cord2[1] - cord1[1]) * rad / 2)
+        a = (sinDLat * sinDLat) + (math.cos(lat1) * math.cos(lat2) * sinDLng * sinDLng)
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        return r * c
+    except Exception as e:
+        print(f"An error occured: {e}")
+        print(f"State of variables: r={r}, cord1={cord1}, cord2={cord2}")
 
 # https://developer.tomtom.com/search-api/search-api-documentation-reverse-geocoding/reverse-geocode
 def get_street_data(cord):
-    base_url = "api.tomtom.com"
-    version_number = "2"
-    position = str(cord[0]) + "," + str(cord[1])
-    ext = "JSON"
-    key = "uHuXYU2hIlocJtD1UgIwV0O8omx8sZHv"
+    data = "not set yet"
+    try:
+        base_url = "api.tomtom.com"
+        version_number = "2"
+        position = str(cord[0]) + "," + str(cord[1])
+        ext = "JSON"
+        key = "uHuXYU2hIlocJtD1UgIwV0O8omx8sZHv"
 
-    req = requests.get(f"https://{base_url}/search/{version_number}/reverseGeocode/{position}.{ext}?key={key}")
-    data = json.loads(req.text)
-    if len(data["addresses"]) == 0:
-        return {"message": "NOT FOUND"}
-    addr = data["addresses"][0]["address"]
-    #return addr["street"] + " " + addr["streetNumber"]
-    return addr
+        req = requests.get(f"https://{base_url}/search/{version_number}/reverseGeocode/{position}.{ext}?key={key}")
+        data = json.loads(req.text)
+        if len(data["addresses"]) == 0:
+            return {"message": "NOT FOUND"}
+        addr = data["addresses"][0]["address"]
+        #return addr["street"] + " " + addr["streetNumber"]
+        return addr
+    except Exception as e:
+        print(f"An error occured: {e}")
+        print(f"State of variables: cord={cord}, data={data}")
 
 @app.route("/get_all_avgs", methods=["POST"])
 def get_scoreboard():
     global conn, cursor
 
-    data = json.loads(request.data.decode("UTF-8"))
+    try: data = json.loads(request.data.decode("UTF-8"))
+    except: data = {}
 
     if not conn.is_connected():
         conn.reconnect()
@@ -100,7 +75,8 @@ def get_scoreboard():
 def get_avg_distance():
     global conn, cursor
 
-    data = json.loads(request.data.decode("UTF-8"))
+    try: data = json.loads(request.data.decode("UTF-8"))
+    except: data = {}
 
     if not conn.is_connected():
         conn.reconnect()
@@ -124,7 +100,8 @@ def get_avg_distance():
 def get_locations():
     global conn, cursor
 
-    data = json.loads(request.data.decode("UTF-8"))
+    try: data = json.loads(request.data.decode("UTF-8"))
+    except: data = {}
 
     if not conn.is_connected():
         conn.reconnect()
@@ -147,7 +124,8 @@ def get_locations():
 def data_set():
     global conn, cursor
 
-    data = json.loads(request.data.decode("UTF-8"))
+    try: data = json.loads(request.data.decode("UTF-8"))
+    except: data = {}
 
     latitude = data.get("latitude")
     #if not latitude: return Response("LATITUDE MISSING", 400)
