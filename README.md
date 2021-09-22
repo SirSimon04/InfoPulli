@@ -1,12 +1,12 @@
 # InfoPulli
 This project is created for the Informatik LK.<br>
-The frontend (web-)app is made by (SirSimon04)[https://github.com/SirSimon04/],<br>
-the server and data storage created and served by (LukasBaginski)[https://github.com/LukasBaginski/].<br>
+The frontend (web-)app is made by [SirSimon04](https://github.com/SirSimon04/),<br>
+the server and data storage created and served by [LukasBaginski](https://github.com/LukasBaginski/).<br>
 
 # Documentation
-The server is available at (pulli.noskiller.de)[https://pulli.noskiller.de/].<br>
+The server is available at [pulli.noskiller.de](https://pulli.noskiller.de/).<br>
 All parameters have to be JSON formatted, all responses with status code *200* return a valid JSON response, all responses with status code *400* are plain text. Errors with code *400* are returned because of a missing key in the JSON parameter.<br>
-The server understands eight more routes which redirect to (pulli.noskiller.de/?scan=ONE_OF_EIGHT)[https://pulli.noskiller.de/?scan=ONE_OF_EIGHT].<br>
+The server understands eight more routes which redirect to [pulli.noskiller.de/?scan=ONE_OF_EIGHT](https://pulli.noskiller.de/?scan=ONE_OF_EIGHT).<br>
 These eight routes are the names which are written on the scannable QR code since QR codes do not save GET-parameters.<br>
 <br>
 Note: *All keys in 200 responses followed by a datatype are explainations and are replaced with values of the given datatype.*<br>
