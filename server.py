@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, send_file, redirect
 import mysql.connector
-import json, math
+import json, math, os, requests, ssl
 
+context = ("/home/lukas/Dokumente/Webserver/InfoPulli/certificates/fullchain1.pem", "/home/lukas/Dokumente/Webserver/InfoPulli/certificates/privkey1.pem")
 app = Flask(__name__)
 conn = mysql.connector.connect(
     user="pulli",
@@ -59,61 +60,21 @@ def d_latlng(cord1, cord2, r = 6371):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return r * c
 
-"""
-Oben:
-51.38865
-7.00023
+# https://developer.tomtom.com/search-api/search-api-documentation-reverse-geocoding/reverse-geocode
+def get_street_data(cord):
+    base_url = "api.tomtom.com"
+    version_number = "2"
+    position = str(cord[0]) + "," + str(cord[1])
+    ext = "JSON"
+    key = "uHuXYU2hIlocJtD1UgIwV0O8omx8sZHv"
 
-Unten Links:
-51.38853
-7.00013
-
-Unten Rechts:
-51.38852
-7.00038
-
-Mitte:
-51.38856
-7.00026
-
-C-Tor:
-51.38985
-7.00061
-
-Fahrräder C:
-51.39005
-7.00097
-
-Schwimmbad Werden:
-51.38943
-7.00055
-
-Oben Baum 3 A:
-51.38876
-7.00035
-
-Fahrräder A:
-51.38815
-7.00035
-
-Haupteingang A:
-51.38871
-6.9999
-
-Werdener Wiesn:
-51.38795
-6.99976
-
-Brücke Brehminsel (3x):
-51.38876
-6.99952
-
-51.38884
-6.99951
-
-51.38894
-6.99952
-"""
+    req = requests.get(f"https://{base_url}/search/{version_number}/reverseGeocode/{position}.{ext}?key={key}")
+    data = json.loads(req.text)
+    if len(data["addresses"]) == 0:
+        return {"message": "NOT FOUND"}
+    addr = data["addresses"][0]["address"]
+    #return addr["street"] + " " + addr["streetNumber"]
+    return addr
 
 @app.route("/get_all_avgs", methods=["POST"])
 def get_scoreboard():
@@ -171,12 +132,12 @@ def get_locations():
     if not cursor:
         cursor = conn.cursor()
 
-    SQL = "SELECT timestamp, latitude, longitude, accuracy, person_id, short, first, last FROM scanned_locations JOIN persons WHERE scanned_locations.person_id = persons.id;"
+    SQL = "SELECT timestamp, latitude, longitude, accuracy, person_id, short, first, last, street_name FROM scanned_locations JOIN persons WHERE scanned_locations.person_id = persons.id;"
     cursor.execute(SQL)
     fetched = cursor.fetchall()
     data = []
-    for _timestamp, _latitude, _longitude, _accuracy, _person_id, _short, _first, _last in fetched:
-        data.append((_timestamp.timestamp(), _latitude, _longitude, _accuracy, _person_id, _short, _first, _last))
+    for _timestamp, _latitude, _longitude, _accuracy, _person_id, _short, _first, _last, _street_name in fetched:
+        data.append((_timestamp.timestamp(), _latitude, _longitude, _accuracy, _person_id, _short, _first, _last, _street_name))
 
     resp = Response(json.dumps({"message": "OK", "content": data}), 200)
     resp.headers["Access-Control-Allow-Origin"] = "*"
@@ -189,10 +150,12 @@ def data_set():
     data = json.loads(request.data.decode("UTF-8"))
 
     latitude = data.get("latitude")
-    if not latitude: return Response("LATITUDE MISSING", 400)
+    #if not latitude: return Response("LATITUDE MISSING", 400)
+    if not latitude: latitude = "NULL";
 
     longitude = data.get("longitude")
-    if not longitude: return Response("LONGITUDE MISSING", 400)
+    #if not longitude: return Response("LONGITUDE MISSING", 400)
+    if not longitude: longitude = "NULL";
 
     accuracy = data.get("accuracy")
     if not accuracy: return Response("ACCURACY MISSING", 400)
@@ -206,23 +169,42 @@ def data_set():
     if not cursor:
         cursor = conn.cursor()
 
-    SQL = f"SELECT latitude, longitude, accuracy from scanned_locations WHERE person_id = '{person_id}';"
-    cursor.execute(SQL)
-    fetched = cursor.fetchall()
-    avg = 0
-    if fetched:
-        cords = [(latitude, longitude)]
-        for _lat, _lng, _acc in fetched:
-            cords.append([_lat, _lng, _acc])
+    if person_id != -1:
+        SQL = f"SELECT latitude, longitude, accuracy from scanned_locations WHERE person_id = '{person_id}';"
+        cursor.execute(SQL)
+        fetched = cursor.fetchall()
+        avg = 0
+        if fetched:
+            cords = [(latitude, longitude)]
+            for _lat, _lng, _acc in fetched:
+                cords.append([_lat, _lng, _acc])
 
-        c = 0
-        for p in range(len(cords)):
-            for i in range(p+1, len(cords)):
-                avg += d_latlng(cords[p], cords[i])
-                c += 1
-        avg = round(avg / c, 2)
+            c = 0
+            for p in range(len(cords)):
+                for i in range(p+1, len(cords)):
+                    avg += d_latlng(cords[p], cords[i])
+                    c += 1
+            avg = round(avg / c, 2)
+    else:
+        avg = 0
 
-    SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance) VALUES (now(), '{latitude}', '{longitude}', '{accuracy}', '{person_id}', '{avg}');"
+    if latitude != "NULL" and longitude != "NULL":
+        addr = get_street_data((latitude, longitude))
+    else:
+        addr = None
+
+    try:
+        street_name = addr["streetName"] + " " + addr["streetNumber"]
+    except:
+        try:
+            street_name = addr["freeformAddress"]
+        except: pass
+        street_name = "Unbekannte Straße"
+        if addr == None: street_name = ""
+
+    temp_lat = f"'{latitude}'" if latitude != "NULL" else "NULL"
+    temp_lng = f"'{longitude}'" if longitude != "NULL" else "NULL"
+    SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name) VALUES (now(), {temp_lat}, {temp_lng}, '{accuracy}', '{person_id}', '{avg}', '{street_name}');"
     cursor.execute(SQL)
     conn.commit()
 
@@ -230,8 +212,33 @@ def data_set():
     resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
 
+@app.route("/")
+def index():
+    return redirect("/index.html")
+
+@app.route("/<path:directories>")
+def path(directories):
+    BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/current/"
+
+    abs_path = os.path.join(BASE_DIR, directories)
+
+    filename = ""
+    for i in range(len(abs_path.split("/"))-1, -1, -1):
+        if abs_path.split("/")[i] != "":
+            filename = abs_path.split("/")[i]
+            break
+
+    if filename in ["baginski", "engel", "krinke", "boettger", "thomas", "wendland", "soentgerath", "albrecht"]:
+        return redirect(f"/index.html?scan={filename}")
+
+    try:
+        return send_file(abs_path) # just use abs_path (only init value of abs_path)
+    except FileNotFoundError: pass
+
+    return ""
+
 try:
-    app.run(host="0.0.0.0", port=80)
+    app.run(host="0.0.0.0", port=1443, ssl_context=context)
 except KeyboardInterrupt:
     conn.close()
     print("Closed DB connection.")
