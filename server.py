@@ -121,7 +121,7 @@ def get_locations():
     return resp
 
 @app.route("/add", methods=["POST"])
-def data_set():
+def data_add():
     global conn, cursor
 
     try: data = json.loads(request.data.decode("UTF-8"))
@@ -153,6 +153,7 @@ def data_set():
         fetched = cursor.fetchall()
         avg = 0
         if fetched:
+            print(fetched)
             cords = [(latitude, longitude)]
             for _lat, _lng, _acc in fetched:
                 cords.append([_lat, _lng, _acc])
