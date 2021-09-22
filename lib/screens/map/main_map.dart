@@ -16,7 +16,8 @@ import 'package:location/location.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class MainMap extends StatefulWidget {
-  const MainMap();
+  LocationData? position;
+  MainMap({this.position});
 
   @override
   _MainMapState createState() => _MainMapState();
@@ -50,6 +51,7 @@ class _MainMapState extends State<MainMap> {
 
   @override
   Widget build(BuildContext context) {
+    print("pos " + (widget.position?.longitude.toString() ?? " leer"));
     // Future.delayed(Duration.zero, () => showPosDialog(context));
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -58,7 +60,10 @@ class _MainMapState extends State<MainMap> {
           children: <Widget>[
             FlutterMap(
               options: MapOptions(
-                  center: LatLng(51.388514, 7.000371),
+                  center: LatLng(
+                    widget.position?.latitude ?? 51.388514,
+                    widget.position?.longitude ?? 7.000371,
+                  ),
                   zoom: 13.0), //TODO: current pos
               layers: [
                 TileLayerOptions(

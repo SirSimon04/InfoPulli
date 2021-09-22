@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:info_pulli/screens/map/main_map.dart';
+import 'package:info_pulli/screens/map/map_organizer.dart';
 import 'package:info_pulli/services/name_services.dart';
 import 'package:info_pulli/services/networking.dart';
 import 'package:location/location.dart';
@@ -15,6 +16,7 @@ class ScanInfoScreen extends StatefulWidget {
 class _ScanInfoScreenState extends State<ScanInfoScreen> {
   String grantText = "Warte auf Erlaubnis...";
   bool isButtonDisabled = false;
+  LocationData? position;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,18 +80,21 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
 
                       setState(() {
                         grantText =
-                            "Bei der Standortabfrage ist ein Fehler aufgetreten, dein Scan wurde ihen Standort gesendet";
+                            "Bei der Standortabfrage ist ein Fehler aufgetreten, dein Scan wurde ohne Standort gesendet";
                       });
                       return;
                     } else {
                       setState(() {
                         grantText = "Dein Scan wird verschickt.";
                       });
-                      LocationData position = await location.getLocation();
-                      await Network().addScan(position, widget.scan);
-                      setState(() {
-                        grantText = "Dein Scan wurde verschickt!";
-                      });
+                      LocationData pos = await location.getLocation();
+                      position = pos;
+                      print("pos of scan " + pos.longitude.toString());
+                      await Network().addScan(pos, widget.scan);
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => MapOrganizer(
+                                position: pos,
+                              )));
                     }
                   },
           ),
@@ -120,8 +125,10 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
               style: TextStyle(fontSize: 20),
             ),
             onPressed: () {
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const MainMap()));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => MapOrganizer(
+                        position: position,
+                      )));
             },
           )
         ],
