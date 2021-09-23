@@ -109,12 +109,12 @@ def get_locations():
     if not cursor:
         cursor = conn.cursor()
 
-    SQL = "SELECT timestamp, latitude, longitude, accuracy, person_id, short, first, last, street_name FROM scanned_locations JOIN persons WHERE scanned_locations.person_id = persons.id;"
+    SQL = "SELECT timestamp, latitude, longitude, accuracy, person_id, short, first, last, street_name, message FROM scanned_locations JOIN persons WHERE scanned_locations.person_id = persons.id;"
     cursor.execute(SQL)
     fetched = cursor.fetchall()
     data = []
-    for _timestamp, _latitude, _longitude, _accuracy, _person_id, _short, _first, _last, _street_name in fetched:
-        data.append((_timestamp.timestamp(), _latitude, _longitude, _accuracy, _person_id, _short, _first, _last, _street_name))
+    for _timestamp, _latitude, _longitude, _accuracy, _person_id, _short, _first, _last, _street_name, _message in fetched:
+        data.append((_timestamp.timestamp(), _latitude, _longitude, _accuracy, _person_id, _short, _first, _last, _street_name, _message))
 
     resp = Response(json.dumps({"message": "OK", "content": data}), 200)
     resp.headers["Access-Control-Allow-Origin"] = "*"
@@ -128,18 +128,16 @@ def data_add():
     except: data = {}
 
     latitude = data.get("latitude")
-    #if not latitude: return Response("LATITUDE MISSING", 400)
-    if not latitude: latitude = "NULL";
 
     longitude = data.get("longitude")
-    #if not longitude: return Response("LONGITUDE MISSING", 400)
-    if not longitude: longitude = "NULL";
 
     accuracy = data.get("accuracy")
     if not accuracy: return Response("ACCURACY MISSING", 400)
 
     person_id = data.get("person_id")
     if not person_id: return Response("PERSON_ID MISSING", 400)
+
+    message = data.get("message")
 
     if not conn.is_connected():
         conn.reconnect()
@@ -181,9 +179,7 @@ def data_add():
         street_name = "Unbekannte Straße"
         if addr == None: street_name = ""
 
-    temp_lat = f"'{latitude}'" if latitude != "NULL" else "NULL"
-    temp_lng = f"'{longitude}'" if longitude != "NULL" else "NULL"
-    SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name) VALUES (now(), {temp_lat}, {temp_lng}, '{accuracy}', '{person_id}', '{avg}', '{street_name}');"
+    SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), {latitude if latitude else 'NULL'}, {longitude if longitude else 'NULL'}, '{accuracy}', '{person_id}', '{avg}', '{street_name}', {message if message else 'NULL'});"
     cursor.execute(SQL)
     conn.commit()
 
