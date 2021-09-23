@@ -179,8 +179,8 @@ def data_add():
         street_name = "Unbekannte Straße"
         if addr == None: street_name = ""
 
-    SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), {latitude if latitude else 'NULL'}, {longitude if longitude else 'NULL'}, '{accuracy}', '{person_id}', '{avg}', '{street_name}', {message if message else 'NULL'});"
-    cursor.execute(SQL)
+    SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), {'\'' + latitude + '\'' if latitude else 'NULL'}, {'\'' + longitude + '\'' if longitude else 'NULL'}, '{accuracy}', '{person_id}', '{avg}', '{street_name}', {'\'' + message + '\'' if message else 'NULL'});"
+    cursor.execute(SQL) # close cursor and check if closed to reconnect cursor
     conn.commit()
 
     resp = Response(json.dumps({"message": "OK"}), 200)
