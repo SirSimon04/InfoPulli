@@ -197,7 +197,7 @@ def index():
 
 @app.route("/<path:directories>")
 def path(directories):
-    BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/current/"
+    BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/build/web/"
 
     abs_path = os.path.join(BASE_DIR, directories)
 
