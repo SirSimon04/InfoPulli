@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, Response, send_file, redirect
+from multiprocessing import Process
+from server_reloader import main
 import mysql.connector
-import json, math, os, requests, ssl
+import json, logging, math, os, requests, ssl
 
 context = ("/home/lukas/Dokumente/Webserver/InfoPulli/certificates/fullchain1.pem", "/home/lukas/Dokumente/Webserver/InfoPulli/certificates/privkey1.pem")
 app = Flask(__name__)
@@ -11,6 +13,9 @@ conn = mysql.connector.connect(
     database="pulli"
 )
 cursor = conn.cursor()
+
+#log = logging.getLogger('werkzeug')
+#log.setLevel(logging.CRITICAL)
 
 # https://www.calculator.net/distance-calculator.html
 # https://cs.nyu.edu/visual/home/proj/tiger/gisfaq.html (*)
@@ -60,8 +65,7 @@ def get_scoreboard():
     if not conn.is_connected():
         conn.reconnect()
 
-    if not cursor:
-        cursor = conn.cursor()
+    cursor = conn.cursor()
 
     board_type = data.get("board_type")
     if not board_type: board_type = "avg_distance"
@@ -81,8 +85,7 @@ def get_avg_distance():
     if not conn.is_connected():
         conn.reconnect()
 
-    if not cursor:
-        cursor = conn.cursor()
+    cursor = conn.cursor()
 
     short = data.get("short")
     if not short: return Response("SHORT MISSING", 400)
@@ -106,8 +109,7 @@ def get_locations():
     if not conn.is_connected():
         conn.reconnect()
 
-    if not cursor:
-        cursor = conn.cursor()
+    cursor = conn.cursor()
 
     SQL = "SELECT timestamp, latitude, longitude, accuracy, person_id, short, first, last, street_name, message FROM scanned_locations JOIN persons WHERE scanned_locations.person_id = persons.id;"
     cursor.execute(SQL)
@@ -127,6 +129,11 @@ def data_add():
     try: data = json.loads(request.data.decode("UTF-8"))
     except: data = {}
 
+    if not conn.is_connected():
+        conn.reconnect()
+
+    cursor = conn.cursor()
+
     latitude = data.get("latitude")
 
     longitude = data.get("longitude")
@@ -138,12 +145,6 @@ def data_add():
     if not person_id: return Response("PERSON_ID MISSING", 400)
 
     message = data.get("message")
-
-    if not conn.is_connected():
-        conn.reconnect()
-
-    if not cursor:
-        cursor = conn.cursor()
 
     if person_id != -1:
         SQL = f"SELECT latitude, longitude, accuracy from scanned_locations WHERE person_id = '{person_id}';"
@@ -179,8 +180,11 @@ def data_add():
         street_name = "Unbekannte Straße"
         if addr == None: street_name = ""
 
-    SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), {'\'' + latitude + '\'' if latitude else 'NULL'}, {'\'' + longitude + '\'' if longitude else 'NULL'}, '{accuracy}', '{person_id}', '{avg}', '{street_name}', {'\'' + message + '\'' if message else 'NULL'});"
-    cursor.execute(SQL) # close cursor and check if closed to reconnect cursor
+    '\'' + latitude + '\'' if latitude else 'NULL'
+    '\'' + longitude + '\'' if longitude else 'NULL'
+    '\'' + message + '\'' if message else 'NULL'
+    SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), {latitude}, {longitude}, '{accuracy}', '{person_id}', '{avg}', '{street_name}', {message});"
+    cursor.execute(SQL)
     conn.commit()
 
     resp = Response(json.dumps({"message": "OK"}), 200)
@@ -191,29 +195,35 @@ def data_add():
 def index():
     return redirect("/index.html")
 
-@app.route("/<path:directories>")
+@app.route("/<path:directories>", methods=["GET", "POST"])
 def path(directories):
-    BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/build/web/"
+    if request.method == "POST":
+        if directories == "github":
+            from server_reloader import trigger_reload
+            trigger_reload()
+            #os.system("git pull -q baginski master")
+            return ""
+    else:
+        BASE_DIR = "/home/lukas/Dokumente/GitHub/SirSimon04/InfoPulli/build/web/"
 
-    abs_path = os.path.join(BASE_DIR, directories)
+        abs_path = os.path.join(BASE_DIR, directories)
 
-    filename = ""
-    for i in range(len(abs_path.split("/"))-1, -1, -1):
-        if abs_path.split("/")[i] != "":
-            filename = abs_path.split("/")[i]
-            break
+        filename = ""
+        for i in range(len(abs_path.split("/"))-1, -1, -1):
+            if abs_path.split("/")[i] != "":
+                filename = abs_path.split("/")[i]
+                break
 
-    if filename in ["baginski", "engel", "krinke", "boettger", "thomas", "wendland", "soentgerath", "albrecht"]:
-        return redirect(f"/index.html?scan={filename}")
+        if filename in ["baginski", "engel", "krinke", "boettger", "thomas", "wendland", "soentgerath", "albrecht"]:
+            return redirect(f"/index.html?scan={filename}")
 
-    try:
-        return send_file(abs_path) # just use abs_path (only init value of abs_path)
-    except FileNotFoundError: pass
+        try:
+            return send_file(abs_path)
+        except FileNotFoundError: pass
 
-    return ""
+        return ""
 
-try:
-    app.run(host="0.0.0.0", port=1443, ssl_context=context)
-except KeyboardInterrupt:
-    conn.close()
-    print("Closed DB connection.")
+main(
+    lambda: app.run(host="0.0.0.0", port=1443, ssl_context=context),
+    before_reload = lambda: os.system("git pull -q baginski master")
+)
