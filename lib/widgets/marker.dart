@@ -74,11 +74,17 @@ getCustomMarker(List<dynamic> pos) {
                   ),
                 ),
                 Text(
-                  pos[8],
+                  "Adresse " + pos[8],
                   style: const TextStyle(
                     color: Colors.white,
                   ),
-                )
+                ),
+                Text(
+                  getText(pos[9]),
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
               ],
             ),
             // actions: [
@@ -93,4 +99,12 @@ getCustomMarker(List<dynamic> pos) {
       },
     ),
   );
+}
+
+String getText(pos) {
+  try {
+    return pos[9];
+  } catch (e) {
+    return "Keine Nachricht";
+  }
 }

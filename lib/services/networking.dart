@@ -8,7 +8,7 @@ import 'dart:convert';
 class Network {
   Network();
 
-  Future addScan(LocationData position, String short) async {
+  Future addScan(LocationData position, String short, String? text) async {
     final response = await http.post(
       Uri.parse("https://pulli.noskiller.de/add"),
       body: jsonEncode(
@@ -17,6 +17,7 @@ class Network {
           "longitude": position.longitude ?? null,
           "accuracy": 1,
           "person_id": NameService.getId(short),
+          "message": text ?? "Keine Nachricht hinterlassen",
         },
       ),
       //     headers: <String, String>{

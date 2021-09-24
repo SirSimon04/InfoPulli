@@ -17,6 +17,9 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
   String grantText = "Warte auf Erlaubnis...";
   bool isButtonDisabled = false;
   LocationData? position;
+
+  TextEditingController controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,8 +54,28 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
           const SizedBox(
             height: 50,
           ),
+          Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: "Hinterlasse eine Nachricht...",
+                hintStyle: TextStyle(color: Colors.grey.withOpacity(0.5)),
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 50,
+          ),
           TextButton(
             style: ButtonStyle(
+                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                    const EdgeInsets.all(24.0)),
                 foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -63,7 +86,7 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
               "Standort erlauben",
               style: Theme.of(context).textTheme.bodyText1?.copyWith(
                     color: Colors.white,
-                    fontSize: 36,
+                    fontSize: 30,
                   ),
             ),
             onPressed: isButtonDisabled
@@ -90,7 +113,8 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
                       LocationData pos = await location.getLocation();
                       position = pos;
                       print("pos of scan " + pos.longitude.toString());
-                      await Network().addScan(pos, widget.scan);
+                      await Network()
+                          .addScan(pos, widget.scan, controller.text);
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (context) => MapOrganizer(
                                 position: pos,
@@ -113,6 +137,8 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
           ),
           TextButton(
             style: ButtonStyle(
+                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                    const EdgeInsets.all(16.0)),
                 foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                 backgroundColor:
                     MaterialStateProperty.all<Color>(Colors.blue.shade300),
