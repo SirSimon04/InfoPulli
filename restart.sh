@@ -1,2 +1,3 @@
-sleep 1
+sleep 5
 python3 ./server.py
+
