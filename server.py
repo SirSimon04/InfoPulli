@@ -191,32 +191,32 @@ def data_add():
 def index():
     return redirect("/index.html")
 
-@app.route("/github", methods=["POST"])
-def github():
-    print(request.data.decode("UTF-8"))
-    os.system("git pull -q baginski master && python3 server.py && exit")
-    return ""
-
 @app.route("/<path:directories>")
 def path(directories):
-    BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/build/web/"
+    if request.method == "POST":
+        print(directories)
+        print(request.data.decode("UTF-8"))
+        #os.system("git pull -q baginski master && python3 server.py && exit")
+        return ""
+    else:
+        BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/build/web/"
 
-    abs_path = os.path.join(BASE_DIR, directories)
+        abs_path = os.path.join(BASE_DIR, directories)
 
-    filename = ""
-    for i in range(len(abs_path.split("/"))-1, -1, -1):
-        if abs_path.split("/")[i] != "":
-            filename = abs_path.split("/")[i]
-            break
+        filename = ""
+        for i in range(len(abs_path.split("/"))-1, -1, -1):
+            if abs_path.split("/")[i] != "":
+                filename = abs_path.split("/")[i]
+                break
 
-    if filename in ["baginski", "engel", "krinke", "boettger", "thomas", "wendland", "soentgerath", "albrecht"]:
-        return redirect(f"/index.html?scan={filename}")
+        if filename in ["baginski", "engel", "krinke", "boettger", "thomas", "wendland", "soentgerath", "albrecht"]:
+            return redirect(f"/index.html?scan={filename}")
 
-    try:
-        return send_file(abs_path) # just use abs_path (only init value of abs_path)
-    except FileNotFoundError: pass
+        try:
+            return send_file(abs_path) # just use abs_path (only init value of abs_path)
+        except FileNotFoundError: pass
 
-    return ""
+        return ""
 
 try:
     app.run(host="0.0.0.0", port=1443, ssl_context=context)
