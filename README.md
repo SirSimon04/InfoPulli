@@ -1,4 +1,3 @@
-Test
 # InfoPulli
 This project is created for the Informatik LK.<br>
 The frontend (web-)app is made by [SirSimon04](https://github.com/SirSimon04/),<br>
