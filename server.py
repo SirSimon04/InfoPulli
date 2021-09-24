@@ -183,7 +183,7 @@ def data_add():
     '\'' + longitude + '\'' if longitude else 'NULL'
     '\'' + message + '\'' if message else 'NULL'
     SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), {latitude}, {longitude}, '{accuracy}', '{person_id}', '{avg}', '{street_name}', {message});"
-    cursor.execute(SQL) # close cursor and check if closed to reconnect cursor
+    cursor.execute(SQL) # close cursor and check if closed to reconnect cursor (do not check for None above)
     conn.commit()
 
     resp = Response(json.dumps({"message": "OK"}), 200)
