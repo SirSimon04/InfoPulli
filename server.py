@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, Response, send_file, redirect
+from multiprocessing import Process
 import mysql.connector
 import json, math, os, requests, ssl
 
@@ -11,7 +12,7 @@ conn = mysql.connector.connect(
     database="pulli"
 )
 cursor = conn.cursor()
-
+server = Process(target = app.run, kwargs={"host": "0.0.0.0", "port": 1443, "ssl_context": context})
 # https://www.calculator.net/distance-calculator.html
 # https://cs.nyu.edu/visual/home/proj/tiger/gisfaq.html (*)
 def d_latlng(cord1, cord2, r = 6371):
@@ -198,13 +199,9 @@ def index():
 def path(directories):
     if request.method == "POST":
         if directories == "github":
-            #data = json.loads(request.data.decode("UTF-8"))
-            #os.system("git pull -q baginski master && exit && python3 server.py")
-            os.system("sh -c 'sh ./restart.sh' &")
-            func = request.environ.get('werkzeug.server.shutdown')
-            if func is None:
-                raise RuntimeError('Not running with the Werkzeug Server')
-            func()
+            os.system("git pull -q baginski master")
+            server.terminate()
+            server.join()
             return ""
     else:
         BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/build/web/"
@@ -226,8 +223,4 @@ def path(directories):
 
         return ""
 
-try:
-    app.run(host="0.0.0.0", port=1443, ssl_context=context)
-except KeyboardInterrupt:
-    conn.close()
-    print("Closed DB connection.")
+server.start()
