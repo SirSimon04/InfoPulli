@@ -15,7 +15,7 @@ conn = mysql.connector.connect(
 )
 cursor = conn.cursor()
 
-log.setLevel(logging.ERROR)
+log.setLevel(logging.CRITICAL)
 
 # https://www.calculator.net/distance-calculator.html
 # https://cs.nyu.edu/visual/home/proj/tiger/gisfaq.html (*)
