@@ -4,7 +4,6 @@ from server_reloader import main
 import mysql.connector
 import json, logging, math, os, requests, ssl
 
-log = logging.getLogger('werkzeug')
 context = ("/home/lukas/Dokumente/Webserver/InfoPulli/certificates/fullchain1.pem", "/home/lukas/Dokumente/Webserver/InfoPulli/certificates/privkey1.pem")
 app = Flask(__name__)
 conn = mysql.connector.connect(
@@ -15,6 +14,7 @@ conn = mysql.connector.connect(
 )
 cursor = conn.cursor()
 
+log = logging.getLogger('werkzeug')
 log.setLevel(logging.CRITICAL)
 
 # https://www.calculator.net/distance-calculator.html
