@@ -9,7 +9,7 @@ All parameters have to be JSON formatted, all responses with status code *200* r
 The server understands eight more routes which redirect to [pulli.noskiller.de/?scan=ONE_OF_EIGHT](https://pulli.noskiller.de/?scan=ONE_OF_EIGHT).<br>
 These eight routes are the names which are written on the scannable QR code since QR codes do not save GET-parameters.<br>
 <br>
-Note: *All keys in 200 responses followed by a datatype are explainations and are replaced with values of the given datatype.*<br>
+Note: *All keys in 200 responses followed by a datatype (e.g. *timestamp*: Integer) are explainations and are replaced with values of the given datatype (=> 1632495418.*<br>
 
 ## /get_locations
 ### Function
