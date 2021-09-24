@@ -21,7 +21,7 @@ None<br>
 {<br>
   "message": "OK",<br>
   "content": [<br>
-    [*timestamp*: Double, *latitude*: Double, *longitude*: Double, *accuracy*: Integer, *person_id*: Integer, *short*:<br> String, *first*: String, *last*: String, *street_name*: String]<br>
+    [*timestamp*: Double, *latitude*: Double, *longitude*: Double, *accuracy*: Integer, *person_id*: Integer, *short*:<br> String, *first*: String, *last*: String, *street_name*: String, *message*: String]<br>
   ]<br>
 }<br>
 ### Comment
@@ -35,6 +35,7 @@ latitude: Double || NULL<br>
 longitude: Double || NULL<br>
 accuracy: Integer<br>
 person_id: Integer<br>
+message: String<br>
 ### Reponses
 *200*:<br>
 {<br>
