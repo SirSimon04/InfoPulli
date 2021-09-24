@@ -2,8 +2,9 @@ from flask import Flask, request, jsonify, Response, send_file, redirect
 from multiprocessing import Process
 from server_reloader import main
 import mysql.connector
-import json, math, os, requests, ssl
+import json, logging, math, os, requests, ssl
 
+log = logging.getLogger('werkzeug')
 context = ("/home/lukas/Dokumente/Webserver/InfoPulli/certificates/fullchain1.pem", "/home/lukas/Dokumente/Webserver/InfoPulli/certificates/privkey1.pem")
 app = Flask(__name__)
 conn = mysql.connector.connect(
@@ -13,7 +14,9 @@ conn = mysql.connector.connect(
     database="pulli"
 )
 cursor = conn.cursor()
-server = Process(target = app.run, kwargs={"host": "0.0.0.0", "port": 1443, "ssl_context": context})
+
+log.setLevel(logging.ERROR)
+
 # https://www.calculator.net/distance-calculator.html
 # https://cs.nyu.edu/visual/home/proj/tiger/gisfaq.html (*)
 def d_latlng(cord1, cord2, r = 6371):
@@ -219,7 +222,7 @@ def path(directories):
             return redirect(f"/index.html?scan={filename}")
 
         try:
-            return send_file(abs_path) # just use abs_path (only init value of abs_path)
+            return send_file(abs_path)
         except FileNotFoundError: pass
 
         return ""
