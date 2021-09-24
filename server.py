@@ -191,14 +191,15 @@ def data_add():
 def index():
     return redirect("/index.html")
 
-@app.route("/<path:directories>")
+@app.route("/<path:directories>", methods=["GET", "POST"])
 def path(directories):
-    print(directories)
-    """
-    print(request.data.decode("UTF-8"))
-    os.system("git pull -q baginski master && python3 server.py && exit")
-    return ""
-    """
+    if request.method == "POST":
+        print(directories)
+        print(request.data.decode("UTF-8"))
+        #os.system("git pull -q baginski master && python3 server.py && exit")
+        return ""
+    else:
+
     BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/build/web/"
 
     abs_path = os.path.join(BASE_DIR, directories)
