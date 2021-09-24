@@ -14,8 +14,8 @@ conn = mysql.connector.connect(
 )
 cursor = conn.cursor()
 
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.CRITICAL)
+#log = logging.getLogger('werkzeug')
+#log.setLevel(logging.CRITICAL)
 
 # https://www.calculator.net/distance-calculator.html
 # https://cs.nyu.edu/visual/home/proj/tiger/gisfaq.html (*)
@@ -208,7 +208,8 @@ def path(directories):
             #os.system("git pull -q baginski master")
             return ""
     else:
-        BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/build/web/"
+        print("else GET")
+        BASE_DIR = "/home/lukas/Dokumente/GitHub/SirSimon04/InfoPulli/build/web/"
 
         abs_path = os.path.join(BASE_DIR, directories)
 
@@ -227,10 +228,7 @@ def path(directories):
 
         return ""
 
-def serve():
-    app.run(host="0.0.0.0", port=1443, ssl_context=context)
-
 main(
-    serve,
+    lambda: app.run(host="0.0.0.0", port=1443, ssl_context=context),
     before_reload = lambda: os.system("git pull -q baginski master")
 )
