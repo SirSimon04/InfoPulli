@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify, Response, send_file, redirect
 from multiprocessing import Process
+from server_reloader import main
 import mysql.connector
-import json, math, os, requests, server_reloader, ssl
+import json, math, os, requests, ssl
 
 context = ("/home/lukas/Dokumente/Webserver/InfoPulli/certificates/fullchain1.pem", "/home/lukas/Dokumente/Webserver/InfoPulli/certificates/privkey1.pem")
 app = Flask(__name__)
@@ -223,7 +224,7 @@ def path(directories):
 
         return ""
 
-server_reloader.main(
+main(
     server.start,
     before_reload = lambda: print("Reloading...")
 )
