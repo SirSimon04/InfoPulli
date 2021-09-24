@@ -201,7 +201,7 @@ def path(directories):
         if directories == "github":
             global server
             print(server)
-            os.system("git pull -q baginski master")
+            #os.system("git pull -q baginski master")
             server.terminate()
             server.join()
             return ""
