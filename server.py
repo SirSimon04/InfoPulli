@@ -222,4 +222,7 @@ def path(directories):
 
         return ""
 
-server.start()
+server_reloader.main(
+    server.start,
+    before_reload = lambda: print("Reloading...")
+)
