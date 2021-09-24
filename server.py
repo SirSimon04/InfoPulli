@@ -184,7 +184,7 @@ def data_add():
     '\'' + longitude + '\'' if longitude else 'NULL'
     '\'' + message + '\'' if message else 'NULL'
     SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), {latitude}, {longitude}, '{accuracy}', '{person_id}', '{avg}', '{street_name}', {message});"
-    cursor.execute(SQL) # close cursor and check if closed to reconnect cursor (do not check for None above)
+    cursor.execute(SQL)
     conn.commit()
 
     resp = Response(json.dumps({"message": "OK"}), 200)
@@ -204,7 +204,6 @@ def path(directories):
             #os.system("git pull -q baginski master")
             return ""
     else:
-        print("else GET")
         BASE_DIR = "/home/lukas/Dokumente/GitHub/SirSimon04/InfoPulli/build/web/"
 
         abs_path = os.path.join(BASE_DIR, directories)
