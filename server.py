@@ -198,9 +198,10 @@ def index():
 def path(directories):
     if request.method == "POST":
         print(directories)
-        print(request.data.decode("UTF-8"))
-        #os.system("git pull -q baginski master && python3 server.py && exit")
-        return ""
+        if directories == "github":
+            #data = json.loads(request.data.decode("UTF-8"))
+            os.system("git pull -q baginski master && python3 server.py && exit")
+            return ""
     else:
         BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/build/web/"
 
