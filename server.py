@@ -191,7 +191,7 @@ def data_add():
 def index():
     return redirect("/index.html")
 
-@app.route("/github")
+@app.route("/github", methods=["POST"])
 def github():
     print(request.data.decode("UTF-8"))
     os.system("git pull -q baginski master && python3 server.py && exit")
