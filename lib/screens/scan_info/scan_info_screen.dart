@@ -61,10 +61,10 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
                         side: const BorderSide(color: Colors.blue)))),
             child: Text(
               "Standort erlauben",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1
-                  ?.copyWith(color: Colors.white),
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                    color: Colors.white,
+                    fontSize: 36,
+                  ),
             ),
             onPressed: isButtonDisabled
                 ? null
