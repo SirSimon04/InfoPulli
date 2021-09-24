@@ -191,6 +191,12 @@ def data_add():
 def index():
     return redirect("/index.html")
 
+@app.route("/github")
+def github():
+    print(request.data.decode("UTF-8"))
+    os.system("git pull -q baginski master && python3 server.py && exit")
+    return ""
+
 @app.route("/<path:directories>")
 def path(directories):
     BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/build/web/"
