@@ -198,7 +198,6 @@ def path(directories):
         print(request.data.decode("UTF-8"))
         #os.system("git pull -q baginski master && python3 server.py && exit")
         return ""
-        
     else:
 
     BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/build/web/"
