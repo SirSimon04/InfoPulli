@@ -200,7 +200,7 @@ def index():
 def path(directories):
     if request.method == "POST":
         if directories == "github":
-            from reload_server import trigger_reload
+            from server_reloader import trigger_reload
             trigger_reload()
             #os.system("git pull -q baginski master")
             return ""
