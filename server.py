@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, Response, send_file, redirect
 from multiprocessing import Process
 import mysql.connector
-import json, math, os, requests, ssl
+import json, math, os, requests, server_reloader, ssl
 
 context = ("/home/lukas/Dokumente/Webserver/InfoPulli/certificates/fullchain1.pem", "/home/lukas/Dokumente/Webserver/InfoPulli/certificates/privkey1.pem")
 app = Flask(__name__)
@@ -199,11 +199,8 @@ def index():
 def path(directories):
     if request.method == "POST":
         if directories == "github":
-            global server
-            print(server)
+            server_reloader.trigger_reload()
             #os.system("git pull -q baginski master")
-            server.terminate()
-            server.join()
             return ""
     else:
         BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/build/web/"
