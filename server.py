@@ -199,6 +199,8 @@ def index():
 def path(directories):
     if request.method == "POST":
         if directories == "github":
+            global server
+            print(server)
             os.system("git pull -q baginski master")
             server.terminate()
             server.join()
