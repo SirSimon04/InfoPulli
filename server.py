@@ -194,7 +194,7 @@ def data_add():
 def index():
     return redirect("/index.html")
 
-@app.route("/<path:directories>")
+@app.route("/<path:directories>", methods=["GET", "POST"])
 def path(directories):
     if request.method == "POST":
         print(directories)
