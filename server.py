@@ -229,5 +229,5 @@ def serve():
 
 main(
     serve,
-    before_reload = lambda: print("Reloading...")
+    before_reload = lambda: os.system("git pull -v baginski master")
 )
