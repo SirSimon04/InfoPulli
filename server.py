@@ -65,8 +65,7 @@ def get_scoreboard():
     if not conn.is_connected():
         conn.reconnect()
 
-    if not cursor:
-        cursor = conn.cursor()
+    cursor = conn.cursor()
 
     board_type = data.get("board_type")
     if not board_type: board_type = "avg_distance"
@@ -86,8 +85,7 @@ def get_avg_distance():
     if not conn.is_connected():
         conn.reconnect()
 
-    if not cursor:
-        cursor = conn.cursor()
+    cursor = conn.cursor()
 
     short = data.get("short")
     if not short: return Response("SHORT MISSING", 400)
@@ -111,8 +109,7 @@ def get_locations():
     if not conn.is_connected():
         conn.reconnect()
 
-    if not cursor:
-        cursor = conn.cursor()
+    cursor = conn.cursor()
 
     SQL = "SELECT timestamp, latitude, longitude, accuracy, person_id, short, first, last, street_name, message FROM scanned_locations JOIN persons WHERE scanned_locations.person_id = persons.id;"
     cursor.execute(SQL)
@@ -132,6 +129,11 @@ def data_add():
     try: data = json.loads(request.data.decode("UTF-8"))
     except: data = {}
 
+    if not conn.is_connected():
+        conn.reconnect()
+
+    cursor = conn.cursor()
+
     latitude = data.get("latitude")
 
     longitude = data.get("longitude")
@@ -143,12 +145,6 @@ def data_add():
     if not person_id: return Response("PERSON_ID MISSING", 400)
 
     message = data.get("message")
-
-    if not conn.is_connected():
-        conn.reconnect()
-
-    if not cursor:
-        cursor = conn.cursor()
 
     if person_id != -1:
         SQL = f"SELECT latitude, longitude, accuracy from scanned_locations WHERE person_id = '{person_id}';"
