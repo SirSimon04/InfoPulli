@@ -224,7 +224,10 @@ def path(directories):
 
         return ""
 
+def serve():
+    app.run(host="0.0.0.0", port=1443, ssl_context=context)
+
 main(
-    server.start,
+    serve,
     before_reload = lambda: print("Reloading...")
 )
