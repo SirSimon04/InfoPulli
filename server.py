@@ -200,7 +200,7 @@ def path(directories):
         print(directories)
         if directories == "github":
             #data = json.loads(request.data.decode("UTF-8"))
-            os.system("git pull -q baginski master && python3 server.py && exit")
+            os.system("git pull -q baginski master && exit && python3 server.py")
             return ""
     else:
         BASE_DIR = "/home/lukas/Dokumente/Webserver/InfoPulli/build/web/"
