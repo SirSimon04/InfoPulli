@@ -80,7 +80,7 @@ getCustomMarker(List<dynamic> pos) {
                   ),
                 ),
                 Text(
-                  getText(pos[9]),
+                  pos[9] ?? "Keine Nachricht",
                   style: const TextStyle(
                     color: Colors.white,
                   ),
@@ -102,7 +102,9 @@ getCustomMarker(List<dynamic> pos) {
 }
 
 String getText(pos) {
+  print("here  msg");
   try {
+    print("msg " + pos[9]);
     return pos[9];
   } catch (e) {
     return "Keine Nachricht";

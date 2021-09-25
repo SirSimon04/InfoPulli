@@ -42,7 +42,9 @@ class _MainMapState extends State<MainMap> {
     List<dynamic> positions = await Network().getAllLocations();
     List<Marker> newMarkerList = [];
     for (List<dynamic> pos in positions) {
-      newMarkerList.add(getCustomMarker(pos));
+      if (pos[1] != null) {
+        newMarkerList.add(getCustomMarker(pos));
+      }
     }
     setState(() {
       customMarkerList.addAll(newMarkerList);
@@ -64,7 +66,7 @@ class _MainMapState extends State<MainMap> {
                     widget.position?.latitude ?? 51.388514,
                     widget.position?.longitude ?? 7.000371,
                   ),
-                  zoom: 13.0), //TODO: current pos
+                  zoom: 13.0),
               layers: [
                 TileLayerOptions(
                   urlTemplate: "https://api.tomtom.com/map/1/tile/basic/main/"
