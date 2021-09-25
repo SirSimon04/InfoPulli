@@ -62,8 +62,7 @@ def get_scoreboard():
     try: data = json.loads(request.data.decode("UTF-8"))
     except: data = {}
 
-    if not conn.is_connected():
-        conn.reconnect()
+    if not conn.is_connected(): conn.reconnect()
 
     cursor = conn.cursor()
 
@@ -82,8 +81,7 @@ def get_avg_distance():
     try: data = json.loads(request.data.decode("UTF-8"))
     except: data = {}
 
-    if not conn.is_connected():
-        conn.reconnect()
+    if not conn.is_connected(): conn.reconnect()
 
     cursor = conn.cursor()
 
@@ -106,8 +104,7 @@ def get_locations():
     try: data = json.loads(request.data.decode("UTF-8"))
     except: data = {}
 
-    if not conn.is_connected():
-        conn.reconnect()
+    if not conn.is_connected(): conn.reconnect()
 
     cursor = conn.cursor()
 
@@ -129,8 +126,7 @@ def data_add():
     try: data = json.loads(request.data.decode("UTF-8"))
     except: data = {}
 
-    if not conn.is_connected():
-        conn.reconnect()
+    if not conn.is_connected(): conn.reconnect()
 
     cursor = conn.cursor()
 
@@ -152,7 +148,6 @@ def data_add():
         fetched = cursor.fetchall()
         avg = 0
         if fetched:
-            print(fetched)
             cords = [(latitude, longitude)]
             for _lat, _lng, _acc in fetched:
                 cords.append([_lat, _lng, _acc])
@@ -163,26 +158,21 @@ def data_add():
                     avg += d_latlng(cords[p], cords[i])
                     c += 1
             avg = round(avg / c, 2)
-    else:
-        avg = 0
+    else: avg = 0
 
-    if latitude != "NULL" and longitude != "NULL":
-        addr = get_street_data((latitude, longitude))
-    else:
-        addr = None
+    if latitude and longitude: addr = get_street_data((latitude, longitude))
+    else: addr = None
 
-    try:
-        street_name = addr["streetName"] + " " + addr["streetNumber"]
+    try: street_name = addr["streetName"] + " " + addr["streetNumber"]
     except:
-        try:
-            street_name = addr["freeformAddress"]
+        try: street_name = addr["freeformAddress"]
         except: pass
         street_name = "Unbekannte Straße"
-        if addr == None: street_name = ""
+        if not addr: street_name = ""
 
-    '\'' + latitude + '\'' if latitude else 'NULL'
-    '\'' + longitude + '\'' if longitude else 'NULL'
-    '\'' + message + '\'' if message else 'NULL'
+    latitude = '\'' + str(latitude) + '\'' if latitude else 'NULL'
+    longitude = '\'' + str(longitude) + '\'' if longitude else 'NULL'
+    message = '\'' + str(message) + '\'' if message else 'NULL'
     SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), {latitude}, {longitude}, '{accuracy}', '{person_id}', '{avg}', '{street_name}', {message});"
     cursor.execute(SQL)
     conn.commit()
@@ -201,8 +191,8 @@ def path(directories):
         if directories == "github":
             from server_reloader import trigger_reload
             trigger_reload()
-            #os.system("git pull -q baginski master")
             return ""
+        return ""
     else:
         BASE_DIR = "/home/lukas/Dokumente/GitHub/SirSimon04/InfoPulli/build/web/"
 
@@ -217,8 +207,7 @@ def path(directories):
         if filename in ["baginski", "engel", "krinke", "boettger", "thomas", "wendland", "soentgerath", "albrecht"]:
             return redirect(f"/index.html?scan={filename}")
 
-        try:
-            return send_file(abs_path)
+        try: return send_file(abs_path)
         except FileNotFoundError: pass
 
         return ""
