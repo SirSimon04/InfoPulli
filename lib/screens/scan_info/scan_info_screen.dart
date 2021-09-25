@@ -4,10 +4,11 @@ import 'package:info_pulli/screens/map/map_organizer.dart';
 import 'package:info_pulli/services/name_services.dart';
 import 'package:info_pulli/services/networking.dart';
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ScanInfoScreen extends StatefulWidget {
   final String scan;
-  ScanInfoScreen(this.scan);
+  const ScanInfoScreen(this.scan, {Key? key}) : super(key: key);
 
   @override
   _ScanInfoScreenState createState() => _ScanInfoScreenState();
@@ -19,6 +20,31 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
   LocationData? position;
 
   TextEditingController controller = TextEditingController();
+
+  _lookupScan() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> scans = await prefs.getStringList("scans") ?? [];
+    if (scans.contains(widget.scan)) {
+      print("already scanned");
+    } else {
+      print("never scanned");
+      scans.add(widget.scan);
+      prefs.setStringList("scans", scans);
+    }
+  }
+
+  _addScan() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> scans = await prefs.getStringList("scans") ?? [];
+    scans.add(widget.scan);
+    prefs.setStringList("scans", scans);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _lookupScan();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,20 +131,35 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
                         grantText =
                             "Bei der Standortabfrage ist ein Fehler aufgetreten, dein Scan wurde ohne Standort gesendet";
                       });
-                      return;
+
+                      await Network()
+                          .addScan(null, widget.scan, controller.text);
+
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => MapOrganizer(),
+                        ),
+                      );
                     } else {
                       setState(() {
                         grantText = "Dein Scan wird verschickt.";
                       });
+
                       LocationData pos = await location.getLocation();
                       position = pos;
+
                       print("pos of scan " + pos.longitude.toString());
+
                       await Network()
                           .addScan(pos, widget.scan, controller.text);
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
                           builder: (context) => MapOrganizer(
-                                position: pos,
-                              )));
+                            position: pos,
+                          ),
+                        ),
+                      );
                     }
                   },
           ),
