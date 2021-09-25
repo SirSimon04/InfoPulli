@@ -148,7 +148,6 @@ def data_add():
         fetched = cursor.fetchall()
         avg = 0
         if fetched:
-            print(fetched)
             cords = [(latitude, longitude)]
             for _lat, _lng, _acc in fetched:
                 cords.append([_lat, _lng, _acc])
@@ -171,9 +170,9 @@ def data_add():
         street_name = "Unbekannte Straße"
         if not addr: street_name = ""
 
-    '\'' + str(latitude) + '\'' if latitude else 'NULL'
-    '\'' + str(longitude) + '\'' if longitude else 'NULL'
-    '\'' + str(message) + '\'' if message else 'NULL'
+    latitude = '\'' + str(latitude) + '\'' if latitude else 'NULL'
+    longitude = '\'' + str(longitude) + '\'' if longitude else 'NULL'
+    message = '\'' + str(message) + '\'' if message else 'NULL'
     SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), {latitude}, {longitude}, '{accuracy}', '{person_id}', '{avg}', '{street_name}', {message});"
     cursor.execute(SQL)
     conn.commit()
