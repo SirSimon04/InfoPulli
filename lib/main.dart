@@ -10,6 +10,8 @@ import 'package:latlong2/latlong.dart';
 import "package:http/http.dart" as http;
 import "dart:convert" as convert;
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 void main() {
   String scan = Uri.base.queryParameters["scan"] ?? "nicht gefunden";
   print(scan);
