@@ -155,8 +155,9 @@ def data_add():
             c = 0
             for p in range(len(cords)):
                 for i in range(p+1, len(cords)):
-                    avg += d_latlng(cords[p], cords[i])
-                    c += 1
+                    if cords[p][0] != None and cords[p][1] != None:
+                        avg += d_latlng(cords[p], cords[i])
+                        c += 1
             avg = round(avg / c, 2)
     else: avg = 0
 
