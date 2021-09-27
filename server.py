@@ -126,6 +126,8 @@ def data_add():
     try: data = json.loads(request.data.decode("UTF-8"))
     except: data = {}
 
+    print(data)
+
     if not conn.is_connected(): conn.reconnect()
 
     cursor = conn.cursor()
@@ -161,7 +163,8 @@ def data_add():
                         if not None in cords[i]:
                             avg += d_latlng(cords[p], cords[i])
                             c += 1
-            avg = round(avg / c, 2)
+            if c > 0: avg = round(avg / c, 2)
+            else: avg = 0
     else: avg = 0
 
     if latitude and longitude: addr = get_street_data((latitude, longitude))
