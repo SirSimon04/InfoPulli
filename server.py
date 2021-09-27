@@ -155,8 +155,11 @@ def data_add():
             c = 0
             for p in range(len(cords)):
                 for i in range(p+1, len(cords)):
+                    with open("/home/lukas/Dokumente/GitHub/SirSimon04/InfoPulli/build/web/TEMP_VAR.temp", "a") as f:
+                        f.write(str(cords[p]))
                     if cords[p][0] != None and cords[p][1] != None and cords[i][0] != None and cords[i][1] != None:
-                        avg += d_latlng(cords[p], cords[i])
+                        #avg += d_latlng(cords[p], cords[i])
+                        avg += 1
                         c += 1
             avg = round(avg / c, 2)
     else: avg = 0
