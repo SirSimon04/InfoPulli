@@ -142,6 +142,9 @@ def data_add():
 
     message = data.get("message")
 
+    with open("/home/lukas/Dokumente/GitHub/SirSimon04/InfoPulli/build/web/lol.txt", "w") as f:
+        f.write("TEST")
+
     if person_id != -1:
         SQL = f"SELECT latitude, longitude, accuracy from scanned_locations WHERE person_id = '{person_id}';"
         cursor.execute(SQL)
