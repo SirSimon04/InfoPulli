@@ -4,7 +4,7 @@ from server_reloader import main
 import mysql.connector
 import json, logging, math, os, requests, ssl
 
-context = ("/home/lukas/Dokumente/Webserver/InfoPulli/certificates/fullchain1.pem", "/home/lukas/Dokumente/Webserver/InfoPulli/certificates/privkey1.pem")
+context = ("./certificates/fullchain1.pem", "./certificates/privkey1.pem")
 app = Flask(__name__)
 conn = mysql.connector.connect(
     user="pulli",
