@@ -201,7 +201,7 @@ def path(directories):
             return ""
         return ""
     else:
-        BASE_DIR = "/home/lukas/Dokumente/GitHub/SirSimon04/InfoPulli/build/web/"
+        BASE_DIR = "./build/web/"
 
         abs_path = os.path.join(BASE_DIR, directories)
 
