@@ -4,7 +4,8 @@ from server_reloader import main
 import mysql.connector
 import json, logging, math, os, requests, ssl
 
-context = ("./certificates/fullchain1.pem", "./certificates/privkey1.pem")
+# Absolute path for raspberry pi
+context = ("/home/pi/Documents/GitHub/InfoPulli/certificates/fullchain1.pem", "/home/pi/Documents/GitHub/InfoPulli/certificates/privkey1.pem")
 app = Flask(__name__)
 conn = mysql.connector.connect(
     user="pulli",
@@ -201,7 +202,8 @@ def path(directories):
             return ""
         return ""
     else:
-        BASE_DIR = "./build/web/"
+        # Absolute path for raspberry pi
+        BASE_DIR = "/home/pi/Documents/GitHub/InfoPulli/build/web/"
 
         abs_path = os.path.join(BASE_DIR, directories)
 
