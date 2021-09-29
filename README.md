@@ -8,6 +8,7 @@ the server and data storage created and served by [LukasBaginski](https://github
 # Documentation
 The server is available at [pulli.noskiller.de](https://pulli.noskiller.de/).<br>
 All parameters have to be JSON formatted, all responses with status code *200* return a valid JSON response, all responses with status code *400* are plain text. Errors with code *400* are returned because of a missing key in the JSON parameter.<br>
+All data requests have to be *POST*, the only routes with *GET* return the built web app.<br>
 The server understands eight more routes which redirect to [pulli.noskiller.de/?scan=ONE_OF_EIGHT](https://pulli.noskiller.de/?scan=ONE_OF_EIGHT).<br>
 These eight routes are the names which are written on the scannable QR code since QR codes do not save GET-parameters.<br>
 <br>
@@ -27,7 +28,7 @@ None<br>
   ]<br>
 }<br>
 ### Comment
-None<br>
+The list in **content** is a list in a list, the values are not connected to the keys, they are just placeholders.<br>
 
 ## /add
 ### Function
