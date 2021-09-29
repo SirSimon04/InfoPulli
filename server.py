@@ -75,6 +75,29 @@ def get_scoreboard():
     elif board_type == "count":
         SQL = "SELECT persons.short, COUNT(scanned_locations.id) AS 'Anzahl' FROM scanned_locations JOIN persons WHERE scanned_locations.person_id = persons.id GROUP BY persons.short ORDER BY Anzahl DESC;"
 
+@app.route("/get_counts", methods=["POST"])
+def get_counts():
+    global conn, cursor
+
+    try: data = json.loads(request.data.decode("UTF-8"))
+    except: data = {}
+
+    if not conn.is_connected(): conn.reconnect()
+
+    cursor = conn.cursor()
+
+    SQL = "SELECT persons.short, PersonScanAnzahl.Anzahl, persons.first, persons.last FROM PersonScanAnzahl JOIN persons ON persons.short = PersonScanAnzahl.short ORDER BY Anzahl DESC;"
+    cursor.execute(SQL)
+    fetched = cursor.fetchall()
+    data = []
+
+    for _short, _anzahl, _first, _last in fetched:
+        data.append({"short": _short, "count": _anzahl, "first": _first, "last": _last})
+
+    resp = Response(json.dumps({"message": "OK", "content": data}), 200)
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    return resp
+
 @app.route("/get_avg_distance", methods=["POST"])
 def get_avg_distance():
     global conn, cursor
