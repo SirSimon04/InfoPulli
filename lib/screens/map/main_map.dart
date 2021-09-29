@@ -23,12 +23,16 @@ class MainMap extends StatefulWidget {
   _MainMapState createState() => _MainMapState();
 }
 
-class _MainMapState extends State<MainMap> {
+class _MainMapState extends State<MainMap>
+    with AutomaticKeepAliveClientMixin<MainMap> {
   final String apiKey = "uHuXYU2hIlocJtD1UgIwV0O8omx8sZHv";
 
   String grantText = "";
 
   List<Marker> customMarkerList = [];
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {

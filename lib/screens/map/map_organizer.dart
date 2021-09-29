@@ -13,8 +13,33 @@ class MapOrganizer extends StatefulWidget {
 class _MapOrganizerState extends State<MapOrganizer> {
   @override
   Widget build(BuildContext context) {
-    return MainMap(
-      position: widget.position,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Informatik LK"),
+          bottom: const TabBar(
+            tabs: [
+              Tab(
+                icon: Icon(Icons.map_rounded),
+                text: "Karte",
+              ),
+              Tab(
+                icon: Icon(Icons.account_circle),
+                text: "Leaderboard",
+              )
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            MainMap(
+              position: widget.position,
+            ),
+            const Icon(Icons.ac_unit),
+          ],
+        ),
+      ),
     );
   }
 }

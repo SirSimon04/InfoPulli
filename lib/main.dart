@@ -6,11 +6,6 @@ import "package:flutter/material.dart";
 import "package:flutter_map/flutter_map.dart";
 import 'package:info_pulli/screens/map/main_map.dart';
 import 'package:info_pulli/screens/scan_info/scan_info_screen.dart';
-import 'package:latlong2/latlong.dart';
-import "package:http/http.dart" as http;
-import "dart:convert" as convert;
-
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   String scan = Uri.base.queryParameters["scan"] ?? "nicht gefunden";
