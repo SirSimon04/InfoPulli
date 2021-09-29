@@ -94,6 +94,9 @@ def get_counts():
     for _short, _anzahl, _first, _last in fetched:
         data.append({"short": _short, "count": _anzahl, "first": _first, "last": _last})
 
+    with open("/home/pi/Documents/GitHub/InfoPulli/build/web/get_counts.json", "w") as f:
+        f.write(str(data))
+
     resp = Response(json.dumps({"message": "OK", "content": data}), 200)
     resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
