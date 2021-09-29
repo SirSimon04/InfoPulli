@@ -52,7 +52,7 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
   Widget build(BuildContext context) {
     return isScanned
         ? Scaffold(
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.blueGrey[900],
             body: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
