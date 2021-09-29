@@ -62,4 +62,24 @@ class Network {
       print(e);
     }
   }
+
+  Future getCount() async {
+    print("getCount");
+
+    try {
+      final response = await http.post(
+        Uri.parse("https://pulli.noskiller.de/get_counts"),
+        body: jsonEncode({}),
+      );
+      print("status " + response.statusCode.toString());
+      List<dynamic> scans = jsonDecode(response.body)["content"];
+
+      print("all scans " + scans.toString());
+      print("scan " + scans[1].toString());
+      print("anzahl " + scans[2]["count"].toString());
+      return scans;
+    } catch (e) {
+      print(e);
+    }
+  }
 }

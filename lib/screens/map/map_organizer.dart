@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:info_pulli/screens/leaderboard/leaderboard.dart';
 import 'package:info_pulli/screens/map/main_map.dart';
 import 'package:location/location.dart';
 
@@ -36,7 +37,7 @@ class _MapOrganizerState extends State<MapOrganizer> {
             MainMap(
               position: widget.position,
             ),
-            const Icon(Icons.ac_unit),
+            const LeaderBoard(),
           ],
         ),
       ),
