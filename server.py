@@ -15,8 +15,7 @@ conn = mysql.connector.connect(
 )
 cursor = conn.cursor()
 
-#log = logging.getLogger('werkzeug')
-#log.setLevel(logging.CRITICAL)
+logging.basicConfig(filename="server.log")
 
 # https://www.calculator.net/distance-calculator.html
 # https://cs.nyu.edu/visual/home/proj/tiger/gisfaq.html (*)
@@ -32,8 +31,8 @@ def d_latlng(cord1, cord2, r = 6371):
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         return r * c
     except Exception as e:
-        print(f"An error occured: {e}")
-        print(f"State of variables: r={r}, cord1={cord1}, cord2={cord2}")
+        logging.error(f"An error occured: {e}")
+        logging.debug(f"State of variables: r={r}, cord1={cord1}, cord2={cord2}")
 
 # https://developer.tomtom.com/search-api/search-api-documentation-reverse-geocoding/reverse-geocode
 def get_street_data(cord):
@@ -53,8 +52,8 @@ def get_street_data(cord):
         #return addr["street"] + " " + addr["streetNumber"]
         return addr
     except Exception as e:
-        print(f"An error occured: {e}")
-        print(f"State of variables: cord={cord}, data={data}")
+        logging.error(f"An error occured: {e}")
+        logging.debug(f"State of variables: cord={cord}, data={data}")
 
 @app.route("/get_all_avgs", methods=["POST"])
 def get_scoreboard():
@@ -75,6 +74,10 @@ def get_scoreboard():
     elif board_type == "count":
         SQL = "SELECT persons.short, COUNT(scanned_locations.id) AS 'Anzahl' FROM scanned_locations JOIN persons WHERE scanned_locations.person_id = persons.id GROUP BY persons.short ORDER BY Anzahl DESC;"
 
+    logging.debug(f"/get_all_avgs: SQL={SQL}")
+
+    return "function not implemented (yet)"
+
 @app.route("/get_counts", methods=["POST"])
 def get_counts():
     global conn, cursor
@@ -93,6 +96,8 @@ def get_counts():
 
     for _short, _anzahl, _first, _last in fetched:
         data.append({"short": _short, "count": _anzahl, "first": _first, "last": _last})
+
+    logging.debug(f"/get_counts: data={data}")
 
     resp = Response(json.dumps({"message": "OK", "content": data}), 200)
     resp.headers["Access-Control-Allow-Origin"] = "*"
@@ -150,7 +155,7 @@ def data_add():
     try: data = json.loads(request.data.decode("UTF-8"))
     except: data = {}
 
-    print(data)
+    logging.debug(data)
 
     if not conn.is_connected(): conn.reconnect()
 
@@ -169,6 +174,7 @@ def data_add():
     message = data.get("message")
 
     if person_id != -1:
+        logging.debug("person_id != -1")
         SQL = f"SELECT latitude, longitude, accuracy from scanned_locations WHERE person_id = '{person_id}';"
         cursor.execute(SQL)
         fetched = cursor.fetchall()
@@ -180,6 +186,8 @@ def data_add():
                 cords.append([_lat, _lng, _acc])
             cords.append([latitude, longitude, accuracy])
 
+            logging.debug(f"cords={cords}")
+
             c = 0
             for p in range(len(cords)):
                 if not None in cords[p]:
@@ -187,8 +195,11 @@ def data_add():
                         if not None in cords[i]:
                             avg += d_latlng(cords[p], cords[i])
                             c += 1
+            logging.debug(f"c={c}")
+            logging.debug(f"avg={avg}")
             if c > 0: avg = round(avg / c, 2)
             else: avg = 0
+            logging.debug(f"avg={avg}")
     else: avg = 0
 
     if latitude and longitude: addr = get_street_data((latitude, longitude))
@@ -201,12 +212,16 @@ def data_add():
         street_name = "Unbekannte Straße"
         if not addr: street_name = ""
 
+    logging.debug(f"street_name={street_name}")
+
     latitude = '\'' + str(latitude) + '\'' if latitude else 'NULL'
     longitude = '\'' + str(longitude) + '\'' if longitude else 'NULL'
     message = '\'' + str(message) + '\'' if message else 'NULL'
     SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), {latitude}, {longitude}, '{accuracy}', '{person_id}', '{avg}', '{street_name}', {message});"
     cursor.execute(SQL)
     conn.commit()
+
+    logging.debug(f"/add: SQL={SQL}")
 
     resp = Response(json.dumps({"message": "OK"}), 200)
     resp.headers["Access-Control-Allow-Origin"] = "*"
@@ -244,7 +259,11 @@ def path(directories):
 
         return ""
 
+def git_pull():
+    logging.debug("git pull -v baginski master")
+    os.system("git pull -v baginski master")
+
 main(
     lambda: app.run(host="0.0.0.0", port=1443, ssl_context=context),
-    before_reload = lambda: os.system("git pull -q baginski master")
+    before_reload = git_pull
 )
