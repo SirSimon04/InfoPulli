@@ -57,7 +57,7 @@ class _LeaderBoardState extends State<LeaderBoard> {
                     ),
                     tileColor: getColor(index),
                     title: Text(names[index]),
-                    leading: Image.asset("images/${shorts[index]}.png"),
+                    leading: Image.asset("assets/images/${shorts[index]}.png"),
                     trailing: Padding(
                       padding: const EdgeInsets.only(right: 32),
                       child: Text(scanCodes[index].toString()),
