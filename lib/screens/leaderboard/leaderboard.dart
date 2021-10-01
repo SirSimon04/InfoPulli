@@ -22,7 +22,6 @@ class _LeaderBoardState extends State<LeaderBoard> {
 
   Future<void> getCounts() async {
     var scans = await Network().getCount();
-    print("scans " + scans[0]["short"].toString());
     List<String> n = [];
     List<String> s = [];
     List<int> sC = [];
