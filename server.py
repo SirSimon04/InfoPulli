@@ -1,3 +1,5 @@
+import sys
+import time
 from flask import Flask, request, jsonify, Response, send_file, redirect
 from multiprocessing import Process
 from server_reloader import main
@@ -9,13 +11,14 @@ context = ("/home/pi/Documents/GitHub/InfoPulli/certificates/fullchain1.pem", "/
 app = Flask(__name__)
 conn = mysql.connector.connect(
     user="pulli",
-    password="Informatik.2022",
-    host="192.168.243.153",
+    password="Informatik2022",
+    host="192.168.243.57",
     database="pulli"
 )
 cursor = conn.cursor()
 
 logging.basicConfig(filename="server.log")
+logging.debug("Starting server.py")
 
 # https://www.calculator.net/distance-calculator.html
 # https://cs.nyu.edu/visual/home/proj/tiger/gisfaq.html (*)
