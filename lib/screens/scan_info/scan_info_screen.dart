@@ -44,6 +44,7 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
 
   @override
   void initState() {
+    print(widget.scan);
     super.initState();
     _lookupScan();
   }
@@ -62,7 +63,9 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Center(
                       child: Text(
-                        "Du hast den Pulli von ${NameService.getFullName(widget.scan)} bereits gescannt",
+                        widget.scan == "buch"
+                            ? "Du hast das Jahrbuch bereits gescannt"
+                            : "Du hast den Pulli von ${NameService.getFullName(widget.scan)} bereits gescannt",
                         style: Theme.of(context)
                             .textTheme
                             .headline4
@@ -78,7 +81,9 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Center(
                       child: Text(
-                        "Du kannst jeden Pulli nur einmal scannen, deswegen kannst du leider keinen neuen Scan senden",
+                        widget.scan == "buch"
+                            ? "Du kannst das Abibuch nur einmal scannen, deswegen kannst du leider keinen neune Scan senden"
+                            : "Du kannst jeden Pulli nur einmal scannen, deswegen kannst du leider keinen neuen Scan senden",
                         style: Theme.of(context)
                             .textTheme
                             .headline5
@@ -130,7 +135,9 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Center(
                       child: Text(
-                        "Du hast den Pulli von ${NameService.getFullName(widget.scan)} gescannt",
+                        widget.scan == "buch"
+                            ? "Du hast das Abibuch gescannt"
+                            : "Du hast den Pulli von ${NameService.getFullName(widget.scan)} gescannt",
                         style: Theme.of(context)
                             .textTheme
                             .headline4
@@ -146,7 +153,7 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Center(
                       child: Text(
-                        "Um deinen Scan zu verifizieren, ist deine Standorterlaubnis nötig",
+                        "Wenn du möchetst, kannst du den Scan mit deinem Standort und einer Nachricht hinterlassen, die später auf der Karte angezeigt werden",
                         style: Theme.of(context)
                             .textTheme
                             .headline5
@@ -179,18 +186,19 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
                   ),
                   TextButton(
                     style: ButtonStyle(
-                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                            const EdgeInsets.all(24.0)),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white),
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.blue),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                    side:
-                                        const BorderSide(color: Colors.blue)))),
+                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                          const EdgeInsets.all(24.0)),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.blue),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: const BorderSide(color: Colors.blue),
+                        ),
+                      ),
+                    ),
                     child: Text(
                       "Standort erlauben",
                       style: Theme.of(context).textTheme.bodyText1?.copyWith(

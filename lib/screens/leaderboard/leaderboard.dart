@@ -43,7 +43,7 @@ class _LeaderBoardState extends State<LeaderBoard> {
     return Scaffold(
       backgroundColor: Colors.blueGrey[900],
       body: names.isEmpty
-          ? const CircularProgressIndicator()
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: ListView.separated(
                 shrinkWrap: true,
