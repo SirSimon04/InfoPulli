@@ -7,20 +7,23 @@ import mysql.connector
 import json, logging, math, os, requests, ssl
 
 # Absolute path for raspberry pi
-#context = ("/home/pi/Documents/GitHub/InfoPulli/certificates/fullchain1.pem", "/home/pi/Documents/GitHub/InfoPulli/certificates/privkey1.pem")
-# Absolute path for hosteurope
-context = ("~/InfoPulli/certificates/fullchain1.pem", "~/InfoPulli/certificates/privkey1.pem")
+# context = ("/home/pi/Documents/GitHub/InfoPulli/certificates/fullchain1.pem", "/home/pi/Documents/GitHub/InfoPulli/certificates/privkey1.pem")
+
+# Absolute path for NAS-3
+context = ("/share/homes/Lukas/InfoPulli/certificates/fullchain1.pem", "/share/homes/Lukas/InfoPulli/certificates/privkey1.pem")
+context = ("/home/lukas/InfoPulli/certificates/fullchain.pem", "/home/lukas/InfoPulli/certificates/privkey.pem")
+
 app = Flask(__name__)
 conn = mysql.connector.connect(
     user="pulli",
     password="Informatik2022",
-    host="localhost",
+    host="nas-3",
     database="pulli"
 )
 cursor = conn.cursor()
 
-logging.basicConfig(filename="server.log")
-logging.debug("Starting server.py")
+#logging.basicConfig(filename="server.log")
+#logging.debug("Starting server.py")
 
 # https://www.calculator.net/distance-calculator.html
 # https://cs.nyu.edu/visual/home/proj/tiger/gisfaq.html (*)
@@ -246,9 +249,11 @@ def path(directories):
         return ""
     else:
         # Absolute path for raspberry pi
-        #BASE_DIR = "/home/pi/Documents/GitHub/InfoPulli/build/web/"
-        # Absolute path for hosteurope
-        BASE_DIR = "~/InfoPulli/build/web/"
+        # BASE_DIR = "/home/pi/Documents/GitHub/InfoPulli/build/web/"
+
+        # Absolute path for NAS-3
+        BASE_DIR = "/share/homes/Lukas/InfoPulli/build/web/"
+        BASE_DIR = "/home/lukas/InfoPulli/build/web/"
 
         abs_path = os.path.join(BASE_DIR, directories)
 
@@ -258,7 +263,7 @@ def path(directories):
                 filename = abs_path.split("/")[i]
                 break
 
-        if filename in ["baginski", "engel", "krinke", "boettger", "thomas", "wendland", "soentgerath", "albrecht"]:
+        if filename in ["baginski", "engel", "krinke", "boettger", "thomas", "wendland", "soentgerath", "albrecht", "buch"]:
             return redirect(f"/index.html?scan={filename}")
 
         try: return send_file(abs_path)
