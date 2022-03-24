@@ -16,6 +16,8 @@ class NameService {
       return "Sebastian Wendland";
     } else if (short == "albrecht") {
       return "Michael Albrecht";
+    } else if (short == "buch") {
+      return "Jahrbuch";
     } else {
       return "Fehler";
     }
@@ -38,6 +40,8 @@ class NameService {
       return 7;
     } else if (short == "albrecht") {
       return 8;
+    } else if (short == "buch") {
+      return 9;
     } else {
       return -1;
     }
@@ -60,6 +64,8 @@ class NameService {
       return "assets/images/baginski.png";
     } else if (short == "albrecht") {
       return "assets/images/baginski.png";
+    } else if (short == "buch") {
+      return "assets/images/buch.png";
     } else {
       return "Fehler";
     }
