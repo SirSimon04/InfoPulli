@@ -26,7 +26,7 @@ class _LeaderBoardState extends State<LeaderBoard> {
     List<String> s = [];
     List<int> sC = [];
     for (var person in scans) {
-      n.add(person["first"] + person["last"]);
+      n.add(person["first"] + " " + person["last"]);
       s.add(person["short"]);
       sC.add(person["count"]);
     }
@@ -44,29 +44,27 @@ class _LeaderBoardState extends State<LeaderBoard> {
       backgroundColor: Colors.blueGrey[900],
       body: names.isEmpty
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: ListView.separated(
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(8),
-                itemCount: names.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    contentPadding: const EdgeInsets.all(8.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    tileColor: getColor(index),
-                    title: Text(names[index]),
-                    leading: Image.asset("assets/images/${shorts[index]}.png"),
-                    trailing: Padding(
-                      padding: const EdgeInsets.only(right: 32),
-                      child: Text(scanCodes[index].toString()),
-                    ),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) =>
-                    const Divider(),
-              ),
+          : ListView.separated(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(8),
+              itemCount: names.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  contentPadding: const EdgeInsets.all(8.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  tileColor: getColor(index),
+                  title: Text(names[index]),
+                  leading: Image.asset("assets/images/${shorts[index]}.png"),
+                  trailing: Padding(
+                    padding: const EdgeInsets.only(right: 32),
+                    child: Text(scanCodes[index].toString()),
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(),
             ),
     );
   }
