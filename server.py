@@ -2,15 +2,10 @@ import sys
 import time
 from flask import Flask, request, jsonify, Response, send_file, redirect
 from multiprocessing import Process
-from server_reloader import main
+# from server_reloader import main # Server could be restarted without permission
 import mysql.connector
 import json, logging, math, os, requests, ssl
 
-# Absolute path for raspberry pi
-# context = ("/home/pi/Documents/GitHub/InfoPulli/certificates/fullchain1.pem", "/home/pi/Documents/GitHub/InfoPulli/certificates/privkey1.pem")
-
-# Absolute path for NAS-3
-context = ("/share/homes/Lukas/InfoPulli/certificates/fullchain1.pem", "/share/homes/Lukas/InfoPulli/certificates/privkey1.pem")
 context = ("/home/lukas/InfoPulli/certificates/fullchain.pem", "/home/lukas/InfoPulli/certificates/privkey.pem")
 
 app = Flask(__name__)
@@ -22,8 +17,8 @@ conn = mysql.connector.connect(
 )
 cursor = conn.cursor()
 
-#logging.basicConfig(filename="server.log")
-#logging.debug("Starting server.py")
+logging.basicConfig(filename="server.log")
+logging.debug("Starting server.py")
 
 # https://www.calculator.net/distance-calculator.html
 # https://cs.nyu.edu/visual/home/proj/tiger/gisfaq.html (*)
@@ -50,7 +45,7 @@ def get_street_data(cord):
         version_number = "2"
         position = str(cord[0]) + "," + str(cord[1])
         ext = "JSON"
-        key = "uHuXYU2hIlocJtD1UgIwV0O8omx8sZHv"
+        key = "uHuXYU2hIlocJtD1UgIwV0O8omx8sZHv" # Security vulnerability
 
         req = requests.get(f"https://{base_url}/search/{version_number}/reverseGeocode/{position}.{ext}?key={key}")
         data = json.loads(req.text)
@@ -125,8 +120,8 @@ def get_avg_distance():
     short = data.get("short")
     if not short: return Response("SHORT MISSING", 400)
 
-    SQL = f"SELECT avg_distance FROM scanned_locations JOIN persons WHERE scanned_locations.person_id = persons.id AND persons.short = '{short}' ORDER BY scanned_locations.id DESC LIMIT 1;"
-    cursor.execute(SQL)
+    SQL = f"SELECT avg_distance FROM scanned_locations JOIN persons WHERE scanned_locations.person_id = persons.id AND persons.short = %s ORDER BY scanned_locations.id DESC LIMIT 1;"
+    cursor.execute(SQL, (short))
     fetched = cursor.fetchone()
     data = fetched[0]
 
@@ -183,8 +178,8 @@ def data_add():
 
     if person_id != -1:
         logging.debug("person_id != -1")
-        SQL = f"SELECT latitude, longitude, accuracy from scanned_locations WHERE person_id = '{person_id}';"
-        cursor.execute(SQL)
+        SQL = f"SELECT latitude, longitude, accuracy from scanned_locations WHERE person_id = %s;"
+        cursor.execute(SQL, (person_id))
         fetched = cursor.fetchall()
         avg = 0
 
@@ -225,8 +220,8 @@ def data_add():
     latitude = '\'' + str(latitude) + '\'' if latitude else 'NULL'
     longitude = '\'' + str(longitude) + '\'' if longitude else 'NULL'
     message = '\'' + str(message) + '\'' if message else 'NULL'
-    SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), {latitude}, {longitude}, '{accuracy}', '{person_id}', '{avg}', '{street_name}', {message});"
-    cursor.execute(SQL)
+    SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), %s, %s, %s, %s, %s, %s, %s);"
+    cursor.execute(SQL, (latitude, longitude, accuracy, person_id, avg, street_name, message))
     conn.commit()
 
     logging.debug(f"/add: SQL={SQL}")
@@ -248,11 +243,6 @@ def path(directories):
             return ""
         return ""
     else:
-        # Absolute path for raspberry pi
-        # BASE_DIR = "/home/pi/Documents/GitHub/InfoPulli/build/web/"
-
-        # Absolute path for NAS-3
-        BASE_DIR = "/share/homes/Lukas/InfoPulli/build/web/"
         BASE_DIR = "/home/lukas/InfoPulli/build/web/"
 
         abs_path = os.path.join(BASE_DIR, directories)
@@ -272,10 +262,14 @@ def path(directories):
         return ""
 
 def git_pull():
+    return
+    # Disabled function
     logging.debug("git pull -v baginski master")
     os.system("git pull -v baginski master")
 
-main(
-    lambda: app.run(host="0.0.0.0", port=1443, ssl_context=context),
-    before_reload = git_pull
-)
+#main(
+#    lambda: app.run(host="0.0.0.0", port=1443, ssl_context=context),
+#    before_reload = git_pull
+#)
+
+app.run(host="0.0.0.0", port=1443, ssl_context=context)
