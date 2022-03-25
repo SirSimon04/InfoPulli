@@ -44,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     //final tomtomHQ = latLng.LatLng(52.376372, 4.908066);
     return MaterialApp(
+      title: "Info LK 2022",
       home: ScanInfoScreen(widget.scan),
     );
   }
