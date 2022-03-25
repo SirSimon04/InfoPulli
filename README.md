@@ -1,4 +1,6 @@
 # TODO: Update README.md
+### Important !
+Update index.html (title) after building!
 
 # InfoPulli
 This project is created for the Informatik LK.<br>
