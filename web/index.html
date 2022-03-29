@@ -35,8 +35,12 @@
 <!--  Try to make site faster-->
   <script src="https://unpkg.com/canvaskit-wasm@0.33.0/bin/canvaskit.js"></script>
   <link rel="preload" href="https://unpkg.com/canvaskit-wasm@0.33.0/bin/canvaskit.wasm" as="fetch" crossOrigin="anonymous">
+
+<!--  Styles for loading-spinner-->
+  <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
+<div class="loader">Loading...</div>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->

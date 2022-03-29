@@ -1,13 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
-import "package:flutter_map/flutter_map.dart";
-import 'package:info_pulli/screens/map/main_map.dart';
 import 'package:info_pulli/screens/scan_info/scan_info_screen.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 void main() {
+  setPathUrlStrategy();
   String scan = Uri.base.queryParameters["scan"] ?? "nicht gefunden";
   print(scan);
   runApp(MyApp(scan));
