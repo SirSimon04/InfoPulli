@@ -31,13 +31,17 @@
 
   <title>Info LK 2022</title>
   <link rel="manifest" href="manifest.json">
+
+<!--  Try to make site faster-->
+  <script src="https://unpkg.com/canvaskit-wasm@0.33.0/bin/canvaskit.js"></script>
+  <link rel="preload" href="https://unpkg.com/canvaskit-wasm@0.33.0/bin/canvaskit.wasm" as="fetch" crossOrigin="anonymous">
 </head>
 <body>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
   <script>
-    var serviceWorkerVersion = '2105588838';
+    var serviceWorkerVersion = '2305656037';
     var scriptLoaded = false;
     function loadMainDartJs() {
       if (scriptLoaded) {
