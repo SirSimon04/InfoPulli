@@ -1,10 +1,10 @@
 import sys
 import time
-from flask import Flask, request, jsonify, Response, send_file, redirect
-from multiprocessing import Process
-# from server_reloader import main # Server could be restarted without permission
+from flask import Flask, request, jsonify, Response, send_file, redirect, safe_join
 import mysql.connector
 import json, logging, math, os, requests, ssl
+
+BUILD_DIR = "/home/lukas/InfoPulli/build/web/"
 
 context = ("/home/lukas/InfoPulli/certificates/fullchain.pem", "/home/lukas/InfoPulli/certificates/privkey.pem")
 
@@ -234,42 +234,15 @@ def data_add():
 def index():
     return redirect("/index.html")
 
-@app.route("/<path:directories>", methods=["GET", "POST"])
+@app.route("/<path:directories>")
 def path(directories):
-    if request.method == "POST":
-        if directories == "github":
-            from server_reloader import trigger_reload
-            trigger_reload()
-            return ""
-        return ""
-    else:
-        BASE_DIR = "/home/lukas/InfoPulli/build/web/"
-
-        abs_path = os.path.join(BASE_DIR, directories)
-
-        filename = ""
-        for i in range(len(abs_path.split("/"))-1, -1, -1):
-            if abs_path.split("/")[i] != "":
-                filename = abs_path.split("/")[i]
-                break
-
-        if filename in ["baginski", "engel", "krinke", "boettger", "thomas", "wendland", "soentgerath", "albrecht", "buch"]:
-            return redirect(f"/index.html?scan={filename}")
-
-        try: return send_file(abs_path)
-        except FileNotFoundError: pass
-
-        return ""
-
-def git_pull():
-    return
-    # Disabled function
-    logging.debug("git pull -v baginski master")
-    os.system("git pull -v baginski master")
-
-#main(
-#    lambda: app.run(host="0.0.0.0", port=1443, ssl_context=context),
-#    before_reload = git_pull
-#)
+    filename = directories.split("/")[-1]
+    if filename in ["baginski", "engel", "krinke", "boettger", "thomas", "wendland", "soentgerath", "albrecht", "buch"]:
+        return redirect(f"/index.html?scan={filename}")
+    try:
+        safe_path = safe_join(BUILD_DIR, directories)
+        return send_file(safe_path)
+    except: pass
+    return ""
 
 app.run(host="0.0.0.0", port=1443, ssl_context=context)
