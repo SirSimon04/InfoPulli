@@ -66,11 +66,16 @@ class _MainMapState extends State<MainMap>
           children: <Widget>[
             FlutterMap(
               options: MapOptions(
-                  center: LatLng(
-                    widget.position?.latitude ?? 51.388514,
-                    widget.position?.longitude ?? 7.000371,
-                  ),
-                  zoom: 13.0),
+                center: LatLng(
+                  widget.position?.latitude ?? 51.388514,
+                  widget.position?.longitude ?? 7.000371,
+                ),
+                interactiveFlags:
+                    InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                zoom: 13.0,
+                maxZoom: 18.0,
+                minZoom: 3.0,
+              ),
               layers: [
                 TileLayerOptions(
                   urlTemplate: "https://api.tomtom.com/map/1/tile/basic/main/"
@@ -79,7 +84,7 @@ class _MainMapState extends State<MainMap>
                 ),
                 MarkerLayerOptions(
                   markers: customMarkerList,
-                )
+                ),
               ],
             )
           ],
@@ -89,6 +94,7 @@ class _MainMapState extends State<MainMap>
         child: Image.asset(
           "assets/copyright.png",
           color: Colors.white,
+          scale: 2,
         ),
         onPressed: () async {
           Navigator.push(context,

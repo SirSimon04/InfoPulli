@@ -25,6 +25,7 @@ class _MapOrganizerState extends State<MapOrganizer> {
                 icon: Image.asset(
                   "assets/map.png",
                   color: Colors.white,
+                  scale: 2,
                 ),
                 text: "Karte",
               ),
@@ -32,6 +33,7 @@ class _MapOrganizerState extends State<MapOrganizer> {
                 icon: Image.asset(
                   "assets/user.png",
                   color: Colors.white,
+                  scale: 2,
                 ),
                 text: "Leaderboard",
               )
