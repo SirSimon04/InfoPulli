@@ -86,7 +86,10 @@ class _MainMapState extends State<MainMap>
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.copyright),
+        child: Image.asset(
+          "assets/copyright.png",
+          color: Colors.white,
+        ),
         onPressed: () async {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => CopyrightsPage()));

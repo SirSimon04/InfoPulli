@@ -19,14 +19,20 @@ class _MapOrganizerState extends State<MapOrganizer> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Informatik LK"),
-          bottom: const TabBar(
+          bottom: TabBar(
             tabs: [
               Tab(
-                icon: Icon(Icons.map_rounded),
+                icon: Image.asset(
+                  "assets/map.png",
+                  color: Colors.white,
+                ),
                 text: "Karte",
               ),
               Tab(
-                icon: Icon(Icons.account_circle),
+                icon: Image.asset(
+                  "assets/user.png",
+                  color: Colors.white,
+                ),
                 text: "Leaderboard",
               )
             ],
