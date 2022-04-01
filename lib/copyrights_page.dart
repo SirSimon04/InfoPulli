@@ -73,10 +73,11 @@ class _CopyrightsPageState extends State<CopyrightsPage> {
         child: Column(
           children: [
             Expanded(
-                child: SingleChildScrollView(
-              child: Container(
-                  padding: EdgeInsets.all(20), child: Text(copyrightsText)),
-            )),
+              child: SingleChildScrollView(
+                child: Container(
+                    padding: EdgeInsets.all(20), child: Text(copyrightsText)),
+              ),
+            ),
           ],
         ),
       ),

@@ -14,14 +14,13 @@ getCustomMarker(List<dynamic> pos) {
     builder: (BuildContext context) => IconButton(
       icon: Stack(
         children: [
-          const Icon(
-            Icons.location_on,
-            size: 60.0,
-            color: Colors.black,
+          Image.asset(
+            "assets/pin.png",
+            scale: 2.8,
           ),
           Positioned(
             top: 0,
-            left: 12,
+            left: 5,
             child: Center(
               child: Image(
                 image: AssetImage(
