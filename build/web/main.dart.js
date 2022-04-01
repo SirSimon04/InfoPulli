@@ -67806,7 +67806,7 @@ r=A.ay(["apiKey","uHuXYU2hIlocJtD1UgIwV0O8omx8sZHv"],s,s)
 q=A.cg(0,200)
 p=A.cg(0,100)
 s=A.a_i(r,s,s)
-return A.yL(o,o,A.hd(A.fT(B.aB,A.b([new A.pL(A.b([new A.zN("https://api.tomtom.com/map/1/tile/basic/main/{z}/{x}/{y}.png?key={apiKey}",256,0,18,0,s,q,p,o,o),new A.xa(this.f,o,o)],t.bq),n,o,o)],t.D),B.aw),o,o),A.alC(A.wp("assets/copyright.png",B.j,2),!1,new A.aaL(b)),!1)}}
+return A.yL(o,o,A.hd(A.fT(B.aB,A.b([new A.pL(A.b([new A.zN("https://api.tomtom.com/map/1/tile/basic/main/{z}/{x}/{y}.png?key={apiKey}",256,0,18,0,s,q,p,o,o),new A.xa(this.f,o,o)],t.bq),n,o,o)],t.D),B.aw),o,o),A.alC(A.wp("assets/images/copyright.png",B.j,2),!1,new A.aaL(b)),!1)}}
 A.aaM.prototype={
 $0(){B.c.L(this.a.f,this.b)},
 $S:0}
@@ -67831,7 +67831,7 @@ A.iz.prototype={
 ax(){return new A.Ob(B.k)}}
 A.Ob.prototype={
 K(a,b){var s=null,r=t.D
-return new A.vv(2,A.yL(A.akO(!0,new A.zv(A.b([A.anB(A.wp("assets/map.png",B.j,2),"Karte"),A.anB(A.wp("assets/user.png",B.j,2),"Leaderboard")],r),s),s,B.Mj),s,new A.zx(A.b([new A.x3(this.a.c,s),B.Bo],r),s),s,s),s)}}
+return new A.vv(2,A.yL(A.akO(!0,new A.zv(A.b([A.anB(A.wp("assets/images/map.png",B.j,2),"Karte"),A.anB(A.wp("assets/images/user.png",B.j,2),"Leaderboard")],r),s),s,B.Mj),s,new A.zx(A.b([new A.x3(this.a.c,s),B.Bo],r),s),s,s),s)}}
 A.yP.prototype={
 ax(){return new A.PW(A.azN(null),B.k)}}
 A.PW.prototype={
@@ -68067,7 +68067,7 @@ case 2:return A.U(o,r)}})
 return A.W($async$rr,r)}}
 A.afA.prototype={
 $1(a){var s=null,r=this.a
-return A.GF(s,A.fT(B.aB,A.b([A.wp("assets/pin.png",s,2.8),A.a1G(s,A.hd(A.alQ(s,s,s,!1,36,new A.mh(A.amp(J.a6(r,5)),s,s),36),s,s),s,s,5,s,0,s)],t.D),B.aw),s,new A.afz(a,r),s)},
+return A.GF(s,A.fT(B.aB,A.b([A.wp("assets/assets/pin.png",s,2.8),A.a1G(s,A.hd(A.alQ(s,s,s,!1,36,new A.mh(A.amp(J.a6(r,5)),s,s),36),s,s),s,s,5,s,0,s)],t.D),B.aw),s,new A.afz(a,r),s)},
 $S:410}
 A.afz.prototype={
 $0(){var s,r=this.a,q=A.iD(r,!0).c

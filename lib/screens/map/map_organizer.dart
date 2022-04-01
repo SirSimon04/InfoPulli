@@ -23,7 +23,7 @@ class _MapOrganizerState extends State<MapOrganizer> {
             tabs: [
               Tab(
                 icon: Image.asset(
-                  "assets/map.png",
+                  "assets/images/map.png",
                   color: Colors.white,
                   scale: 2,
                 ),
@@ -31,7 +31,7 @@ class _MapOrganizerState extends State<MapOrganizer> {
               ),
               Tab(
                 icon: Image.asset(
-                  "assets/user.png",
+                  "assets/images/user.png",
                   color: Colors.white,
                   scale: 2,
                 ),

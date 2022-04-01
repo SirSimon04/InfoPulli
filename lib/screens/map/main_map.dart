@@ -92,7 +92,7 @@ class _MainMapState extends State<MainMap>
       ),
       floatingActionButton: FloatingActionButton(
         child: Image.asset(
-          "assets/copyright.png",
+          "assets/images/copyright.png",
           color: Colors.white,
           scale: 2,
         ),

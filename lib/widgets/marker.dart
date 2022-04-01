@@ -15,7 +15,7 @@ getCustomMarker(List<dynamic> pos) {
       icon: Stack(
         children: [
           Image.asset(
-            "assets/pin.png",
+            "assets/assets/pin.png",
             scale: 2.8,
           ),
           Positioned(
