@@ -68,6 +68,14 @@ class _CopyrightsPageState extends State<CopyrightsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("TomTom Maps API - Copyrights"),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Image.asset(
+            "left-arrow.png",
+            scale: 4,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Container(
         child: Column(
