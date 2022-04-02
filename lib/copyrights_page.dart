@@ -71,7 +71,7 @@ class _CopyrightsPageState extends State<CopyrightsPage> {
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: Image.asset(
-            "left-arrow.png",
+            "images/left-arrow.png",
             scale: 4,
           ),
           onPressed: () => Navigator.of(context).pop(),
@@ -80,6 +80,7 @@ class _CopyrightsPageState extends State<CopyrightsPage> {
       body: Container(
         child: Column(
           children: [
+            Expanded(child: Text("Moin")),
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
