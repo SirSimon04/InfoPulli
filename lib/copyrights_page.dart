@@ -77,16 +77,28 @@ class _CopyrightsPageState extends State<CopyrightsPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: Container(
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            Expanded(child: Text("Moin")),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Container(
-                    padding: EdgeInsets.all(20), child: Text(copyrightsText)),
-              ),
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: const Text(
+                  "Owner icons created by Freepik - Flaticon"), //<a href="https://www.flaticon.com/free-icons/owner" title="owner icons">Owner icons created by Freepik - Flaticon</a>
+              alignment: Alignment.centerLeft,
             ),
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: const Text(
+                  "Pin icons created by Freepik - Flaticon"), //<a href="https://www.flaticon.com/free-icons/pin" title="pin icons">Pin icons created by Freepik - Flaticon</a>
+              alignment: Alignment.centerLeft,
+            ),
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: const Text(
+                  "User icons created by Phoenix Group - Flaticon"), // <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Phoenix Group - Flaticon</a>
+              alignment: Alignment.centerLeft,
+            ),
+            Container(padding: EdgeInsets.all(20), child: Text(copyrightsText)),
           ],
         ),
       ),
