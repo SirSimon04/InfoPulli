@@ -19,15 +19,15 @@ getCustomMarker(List<dynamic> pos) {
             scale: 2.8,
           ),
           Positioned(
-            top: 0,
-            left: 5,
+            top: pos[5] == "buch" ? 8 : 0,
+            left: pos[5] == "buch" ? 13 : 5,
             child: Center(
               child: Image(
                 image: AssetImage(
                   NameService.getImagePath(pos[5]),
                 ),
-                height: 36,
-                width: 36,
+                height: pos[5] == "buch" ? 20 : 36,
+                width: pos[5] == "buch" ? 20 : 36,
               ),
             ),
           ),
