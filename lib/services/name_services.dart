@@ -61,9 +61,9 @@ class NameService {
     } else if (short == "soentgerath") {
       return "assets/images/baginski.png";
     } else if (short == "wendland") {
-      return "assets/images/baginski.png";
+      return "assets/images/user.png";
     } else if (short == "albrecht") {
-      return "assets/images/baginski.png";
+      return "assets/images/user.png";
     } else if (short == "buch") {
       return "assets/images/buch.png";
     } else {

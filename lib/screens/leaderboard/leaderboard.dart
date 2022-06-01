@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:info_pulli/services/networking.dart';
 
+import '../../services/name_services.dart';
+
 class LeaderBoard extends StatefulWidget {
   const LeaderBoard({Key? key}) : super(key: key);
 
@@ -56,7 +58,7 @@ class _LeaderBoardState extends State<LeaderBoard> {
                   ),
                   tileColor: getColor(index),
                   title: Text(names[index]),
-                  leading: Image.asset("assets/images/${shorts[index]}.png"),
+                  leading: Image.asset(NameService.getImagePath(shorts[index])),
                   trailing: Padding(
                     padding: const EdgeInsets.only(right: 32),
                     child: Text(scanCodes[index].toString()),
