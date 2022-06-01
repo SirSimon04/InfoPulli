@@ -170,6 +170,13 @@ def data_add():
     latitude = data.get("latitude")
 
     longitude = data.get("longitude")
+    
+    try:
+    	float(latitude)
+    	float(longitude)
+    except:
+    	longitude = None
+    	latitude = None
 
     accuracy = data.get("accuracy")
     if not accuracy: return Response("ACCURACY MISSING", 400)
@@ -179,7 +186,7 @@ def data_add():
 
     message = data.get("message")
 
-    if person_id != -1:
+    if person_id != -1 and (latitude != None and longitude != None):
         logging.debug("person_id != -1")
         SQL = "SELECT latitude, longitude, accuracy from scanned_locations WHERE person_id = %s;"
         print("person_id type:" + str(type(person_id)))
@@ -209,7 +216,7 @@ def data_add():
             logging.debug(f"avg={avg}")
     else: avg = 0
 
-    if latitude and longitude: addr = get_street_data((latitude, longitude))
+    if latitude != None and longitude != None: addr = get_street_data((latitude, longitude))
     else: addr = None
 
     try: street_name = addr["streetName"] + " " + addr["streetNumber"]
@@ -220,9 +227,11 @@ def data_add():
         if not addr: street_name = ""
 
     logging.debug(f"street_name={street_name}")
-
-    latitude = '\'' + str(latitude) + '\'' if latitude else 'NULL'
-    longitude = '\'' + str(longitude) + '\'' if longitude else 'NULL'
+    
+    logging.error("-------------------------------------------------")
+    logging.error(latitude)
+    logging.error(longitude)
+    
     message = '\'' + str(message) + '\'' if message else 'NULL'
     SQL = "INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), %s, %s, %s, %s, %s, %s, %s);"
     cursor.execute(SQL, [latitude, longitude, accuracy, person_id, avg, street_name, message])
