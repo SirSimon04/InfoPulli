@@ -65,7 +65,7 @@ class NameService {
     } else if (short == "albrecht") {
       return "assets/images/user.png";
     } else if (short == "buch") {
-      return "assets/images/engel.png";
+      return "assets/images/buch.png";
     } else {
       return "Fehler";
     }
