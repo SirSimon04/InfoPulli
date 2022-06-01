@@ -1,12 +1,15 @@
 import sys
 import time
-from flask import Flask, request, jsonify, Response, send_file, redirect, safe_join
+from flask import Flask, request, jsonify, Response, send_file, redirect
+from werkzeug.security import safe_join
 import mysql.connector
 import json, logging, math, os, requests, ssl
 
 BUILD_DIR = "/home/lukas/InfoPulli/build/web/"
+#BUILD_DIR = "/home/ana/Documents/InfoPulli/build/web/"
 
 context = ("/home/lukas/InfoPulli/certificates/fullchain.pem", "/home/lukas/InfoPulli/certificates/privkey.pem")
+#context = ("/home/ana/Documents/InfoPulli/certificates/fullchain.pem", "/home/ana/Documents/InfoPulli/certificates/privkey.pem")
 
 app = Flask(__name__)
 conn = mysql.connector.connect(
@@ -120,8 +123,8 @@ def get_avg_distance():
     short = data.get("short")
     if not short: return Response("SHORT MISSING", 400)
 
-    SQL = f"SELECT avg_distance FROM scanned_locations JOIN persons WHERE scanned_locations.person_id = persons.id AND persons.short = %s ORDER BY scanned_locations.id DESC LIMIT 1;"
-    cursor.execute(SQL, (short))
+    SQL = "SELECT avg_distance FROM scanned_locations JOIN persons WHERE scanned_locations.person_id = persons.id AND persons.short = %s ORDER BY scanned_locations.id DESC LIMIT 1;"
+    cursor.execute(SQL, [short])
     fetched = cursor.fetchone()
     data = fetched[0]
 
@@ -178,8 +181,9 @@ def data_add():
 
     if person_id != -1:
         logging.debug("person_id != -1")
-        SQL = f"SELECT latitude, longitude, accuracy from scanned_locations WHERE person_id = %s;"
-        cursor.execute(SQL, (person_id))
+        SQL = "SELECT latitude, longitude, accuracy from scanned_locations WHERE person_id = %s;"
+        print("person_id type:" + str(type(person_id)))
+        cursor.execute(SQL, [person_id])
         fetched = cursor.fetchall()
         avg = 0
 
@@ -220,8 +224,8 @@ def data_add():
     latitude = '\'' + str(latitude) + '\'' if latitude else 'NULL'
     longitude = '\'' + str(longitude) + '\'' if longitude else 'NULL'
     message = '\'' + str(message) + '\'' if message else 'NULL'
-    SQL = f"INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), %s, %s, %s, %s, %s, %s, %s);"
-    cursor.execute(SQL, (latitude, longitude, accuracy, person_id, avg, street_name, message))
+    SQL = "INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), %s, %s, %s, %s, %s, %s, %s);"
+    cursor.execute(SQL, [latitude, longitude, accuracy, person_id, avg, street_name, message])
     conn.commit()
 
     logging.debug(f"/add: SQL={SQL}")
@@ -236,7 +240,7 @@ def index():
 
 @app.route("/<path:directories>")
 def path(directories):
-    filename = directories.split("/")[-1]
+    filename = directories.split("/")[-1].lower()
     if filename in ["baginski", "engel", "krinke", "boettger", "thomas", "wendland", "soentgerath", "albrecht", "buch"]:
         return redirect(f"/index.html?scan={filename}")
     try:
