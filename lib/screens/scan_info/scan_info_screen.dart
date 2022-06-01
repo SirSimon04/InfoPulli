@@ -153,7 +153,7 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Center(
                       child: Text(
-                        "Wenn du möchetst, kannst du den Scan mit deinem Standort und einer Nachricht hinterlassen, die später auf der Karte angezeigt werden",
+                        "Wenn du möchtest, kannst du den Scan mit deinem Standort und einer Nachricht hinterlassen, die später auf der Karte angezeigt werden",
                         style: Theme.of(context)
                             .textTheme
                             .headline5

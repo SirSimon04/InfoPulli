@@ -57,7 +57,6 @@ class _MainMapState extends State<MainMap>
 
   @override
   Widget build(BuildContext context) {
-    print("pos " + (widget.position?.longitude.toString() ?? " leer"));
     // Future.delayed(Duration.zero, () => showPosDialog(context));
     return Scaffold(
       resizeToAvoidBottomInset: false,

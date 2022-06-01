@@ -55,8 +55,7 @@ class Network {
           body: jsonEncode({}));
       List<dynamic> locations = jsonDecode(response.body)["content"];
       print(response.statusCode);
-      print(locations);
-      print(locations.first);
+      print("locations" + locations.toString());
       return locations;
     } catch (e) {
       print(e);
@@ -64,19 +63,12 @@ class Network {
   }
 
   Future getCount() async {
-    print("getCount");
-
     try {
       final response = await http.post(
         Uri.parse("https://pulli.noskiller.de/get_counts"),
         body: jsonEncode({}),
       );
-      print("status " + response.statusCode.toString());
       List<dynamic> scans = jsonDecode(response.body)["content"];
-
-      print("all scans " + scans.toString());
-      print("scan " + scans[1].toString());
-      print("anzahl " + scans[2]["count"].toString());
       return scans;
     } catch (e) {
       print(e);
