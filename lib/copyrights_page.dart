@@ -98,7 +98,8 @@ class _CopyrightsPageState extends State<CopyrightsPage> {
                   "User icons created by Phoenix Group - Flaticon"), // <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Phoenix Group - Flaticon</a>
               alignment: Alignment.centerLeft,
             ),
-            Container(padding: EdgeInsets.all(20), child: Text(copyrightsText)),
+            Container(
+                padding: const EdgeInsets.all(20), child: Text(copyrightsText)),
           ],
         ),
       ),
