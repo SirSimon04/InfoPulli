@@ -1,7 +1,7 @@
 class NameService {
   static String getFullName(String short) {
     if (short == "baginski") {
-      return "Lukas Baginski";
+      return "Ana Baginski";
     } else if (short == "engel") {
       return "Simon Engel";
     } else if (short == "boettger") {
