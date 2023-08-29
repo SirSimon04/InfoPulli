@@ -25,7 +25,7 @@ class MainMap extends StatefulWidget {
 
 class _MainMapState extends State<MainMap>
     with AutomaticKeepAliveClientMixin<MainMap> {
-  final String apiKey = "uHuXYU2hIlocJtD1UgIwV0O8omx8sZHv";
+  final String apiKey = "RvBNcfrlVG11DniSwLVuresFXnvPfxtf"; // TODO: Please someone add a .env file and read the value from it (pulli.env,API:TOMTOM)
 
   String grantText = "";
 

@@ -235,7 +235,7 @@ class _ScanInfoScreenState extends State<ScanInfoScreen> {
                               );
                             } else {
                               setState(() {
-                                grantText = "Dein Scan wird verschickt.";
+                                grantText = "Dein Scan wird verschickt (dauert bis zu 10s).";
                               });
 
                               LocationData pos = await location.getLocation();
