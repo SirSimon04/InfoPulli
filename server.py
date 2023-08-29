@@ -64,7 +64,7 @@ def get_street_data(cord):
         version_number = "2"
         position = str(cord[0]) + "," + str(cord[1])
         ext = "JSON"
-        key = config.get("API", "TOMTOM") # "uHuXYU2hIlocJtD1UgIwV0O8omx8sZHv" # Security vulnerability
+        key = config.get("API", "TOMTOM")
 
         req = requests.get(f"https://{base_url}/search/{version_number}/reverseGeocode/{position}.{ext}?key={key}")
         data = json.loads(req.text)
