@@ -1,27 +1,43 @@
-import sys
-import time
-from flask import Flask, request, jsonify, Response, send_file, redirect
+from flask import Flask, request, Response, send_file, redirect
+from flask_cors import CORS, cross_origin
 from werkzeug.security import safe_join
 import mysql.connector
-import json, logging, math, os, requests, ssl
+import json, logging, math, requests
+import configparser
 
-BUILD_DIR = "/home/lukas/InfoPulli/build/web/"
-#BUILD_DIR = "/home/ana/Documents/InfoPulli/build/web/"
-
-context = ("/home/lukas/InfoPulli/certificates/fullchain.pem", "/home/lukas/InfoPulli/certificates/privkey.pem")
-#context = ("/home/ana/Documents/InfoPulli/certificates/fullchain.pem", "/home/ana/Documents/InfoPulli/certificates/privkey.pem")
+BASE_DIR = "/home/ana/InfoPulli/"
+CERT_DIR = BASE_DIR + "certificates/"
+BUILD_DIR = BASE_DIR + "build/web/"
+SSL_CONTEXT = (CERT_DIR + "cert1.pem", CERT_DIR + "privkey1.pem")
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
+app.config["CORS_HEADERS"] = "Content-Type"
+
+config = configparser.ConfigParser()
+config.read(BASE_DIR + "pulli.env")
+
 conn = mysql.connector.connect(
-    user="pulli",
-    password="Informatik2022",
-    host="nas-3",
-    database="pulli"
+    user=config.get("DB", "USER"),
+    password=config.get("DB", "PASS"),
+    host=config.get("DB", "HOST"),
+    database=config.get("DB", "DB_NAME")
 )
 cursor = conn.cursor()
 
-logging.basicConfig(filename="server.log")
-logging.debug("Starting server.py")
+#logging.basicConfig(filename=BASE_DIR + "server.log")
+#logging.debug("Starting server")
+
+def build_preflight_response():
+    response = Response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
+
+def build_actual_response(response: Response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 # https://www.calculator.net/distance-calculator.html
 # https://cs.nyu.edu/visual/home/proj/tiger/gisfaq.html (*)
@@ -48,7 +64,7 @@ def get_street_data(cord):
         version_number = "2"
         position = str(cord[0]) + "," + str(cord[1])
         ext = "JSON"
-        key = "uHuXYU2hIlocJtD1UgIwV0O8omx8sZHv" # Security vulnerability
+        key = config.get("API", "TOMTOM") # "uHuXYU2hIlocJtD1UgIwV0O8omx8sZHv" # Security vulnerability
 
         req = requests.get(f"https://{base_url}/search/{version_number}/reverseGeocode/{position}.{ext}?key={key}")
         data = json.loads(req.text)
@@ -61,30 +77,10 @@ def get_street_data(cord):
         logging.error(f"An error occured: {e}")
         logging.debug(f"State of variables: cord={cord}, data={data}")
 
-@app.route("/get_all_avgs", methods=["POST"])
-def get_scoreboard():
-    global conn, cursor
-
-    try: data = json.loads(request.data.decode("UTF-8"))
-    except: data = {}
-
-    if not conn.is_connected(): conn.reconnect()
-
-    cursor = conn.cursor()
-
-    board_type = data.get("board_type")
-    if not board_type: board_type = "avg_distance"
-
-    if board_type == "avg_distance":
-        SQL = "SELECT avg_distance, persons.first, persons.last FROM scanned_locations LEFT JOIN persons WHERE scanned_locations.person_id = persons.id ORDER BY scanned_locations.avg_distance DESC;"
-    elif board_type == "count":
-        SQL = "SELECT persons.short, COUNT(scanned_locations.id) AS 'Anzahl' FROM scanned_locations JOIN persons WHERE scanned_locations.person_id = persons.id GROUP BY persons.short ORDER BY Anzahl DESC;"
-
-    logging.debug(f"/get_all_avgs: SQL={SQL}")
-
-    return "function not implemented (yet)"
+# TODO: Route /get_all_avgs
 
 @app.route("/get_counts", methods=["POST"])
+@cross_origin()
 def get_counts():
     global conn, cursor
 
@@ -133,6 +129,7 @@ def get_avg_distance():
     return resp
 
 @app.route("/get_locations", methods=["POST"])
+@cross_origin()
 def get_locations():
     global conn, cursor
 
@@ -147,14 +144,18 @@ def get_locations():
     cursor.execute(SQL)
     fetched = cursor.fetchall()
     data = []
+
     for _timestamp, _latitude, _longitude, _accuracy, _person_id, _short, _first, _last, _street_name, _message in fetched:
         data.append((_timestamp.timestamp(), _latitude, _longitude, _accuracy, _person_id, _short, _first, _last, _street_name, _message))
 
     resp = Response(json.dumps({"message": "OK", "content": data}), 200)
-    resp.headers["Access-Control-Allow-Origin"] = "*"
+    #resp.headers["Access-Control-Allow-Origin"] = "*"
+    #print(resp.headers["Access-Control-Allow-Origin"])
+
     return resp
 
 @app.route("/add", methods=["POST"])
+@cross_origin()
 def data_add():
     global conn, cursor
 
@@ -170,13 +171,13 @@ def data_add():
     latitude = data.get("latitude")
 
     longitude = data.get("longitude")
-    
+
     try:
-    	float(latitude)
-    	float(longitude)
+        float(latitude)
+        float(longitude)
     except:
-    	longitude = None
-    	latitude = None
+        longitude = None
+        latitude = None
 
     accuracy = data.get("accuracy")
     if not accuracy: return Response("ACCURACY MISSING", 400)
@@ -227,11 +228,11 @@ def data_add():
         if not addr: street_name = ""
 
     logging.debug(f"street_name={street_name}")
-    
+
     logging.error("-------------------------------------------------")
     logging.error(latitude)
     logging.error(longitude)
-    
+
     message = '\'' + str(message) + '\'' if message else 'NULL'
     SQL = "INSERT INTO scanned_locations (timestamp, latitude, longitude, accuracy, person_id, avg_distance, street_name, message) VALUES (now(), %s, %s, %s, %s, %s, %s, %s);"
     cursor.execute(SQL, [latitude, longitude, accuracy, person_id, avg, street_name, message])
@@ -244,10 +245,12 @@ def data_add():
     return resp
 
 @app.route("/")
+@cross_origin()
 def index():
     return redirect("/index.html")
 
 @app.route("/<path:directories>")
+@cross_origin()
 def path(directories):
     filename = directories.split("/")[-1].lower()
     if filename in ["baginski", "engel", "krinke", "boettger", "thomas", "wendland", "soentgerath", "albrecht", "buch"]:
@@ -258,4 +261,4 @@ def path(directories):
     except: pass
     return ""
 
-app.run(host="0.0.0.0", port=1443, ssl_context=context)
+app.run(host="0.0.0.0", port=1443, ssl_context=SSL_CONTEXT)
